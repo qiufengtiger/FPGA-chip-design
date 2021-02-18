@@ -1,0 +1,19 @@
+`timescale 1ns/1ps
+module sram(clk, raddr, rdata, waddr, wdata, we);
+	parameter ADDR_WIDTH = 4;
+	parameter DATA_WIDTH = 1;
+	
+	input clk, we;
+	input [ADDR_WIDTH-1:0] raddr, waddr;
+	input [DATA_WIDTH-1:0] wdata;
+	output [DATA_WIDTH-1:0] rdata;
+
+	reg [DATA_WIDTH-1:0] sram_data [0:2**ADDR_WIDTH-1];
+
+	always @ (posedge clk) begin
+		if(we) begin
+			sram_data[waddr] <= wdata;
+		end
+	end
+	assign rdata = sram_data[raddr];
+endmodule 
