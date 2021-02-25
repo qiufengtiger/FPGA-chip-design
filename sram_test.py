@@ -3,6 +3,7 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import FallingEdge
 from cocotb.triggers import RisingEdge
+from cocotb.triggers import Timer
 
 @cocotb.test()
 async def test_sram(dut):
@@ -12,19 +13,30 @@ async def test_sram(dut):
 	clock = Clock(dut.clk, 10, units="us")
 	cocotb.fork(clock.start())
 
+	# initialization
+	testValues = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+	testAddrs = []
 	for i in range(10):
-		val = random.randint(0, 1)
-		addr = random.randint(0, 15)
-		dut._log.info("gen addr = %s" % (addr))
-		await RisingEdge(dut.clk) 
+		# testValues.append(random.randint(0, 1))
+		testAddrs.append(random.randint(0, 15))
+
+	for i in range(10):
 		dut.we <= 1
-		dut.waddr <= addr
-		dut.wdata <= val
-		dut._log.info("we = %s" % (dut.we))
-		await RisingEdge(dut.clk)
-		dut.we <= 0
+		dut.waddr <= testAddrs[i]
+		dut.wdata <= testValues[i]
+		dut._log.info("waddr = %s, wdata = %s, i = %s, input = %s" % (dut.waddr.value, dut.wdata.value, i, testValues[i]))
 		await FallingEdge(dut.clk)
-		dut.raddr <= addr
-		dut._log.info("addr = %s" % (dut.raddr))
-		dut._log.info("val = %s" % (dut.rdata))
-		assert dut.rdata == val, "output rdata was incorrect on the {}th cycle".format(i)
+		dut.we <= 0
+
+	result = []
+	for i in range(0, 10):
+		# dut.raddr <= testAddrs[i]
+		# await Timer(100, units='ps')
+		# result = dut.rdata.value
+		# dut._log.info("raddr = %s, rdata = %s, i = %s, expected = %s" % (dut.raddr.value, result, i, testValues[i]))
+		# assert result == testValues[i], "output was incorrect on the {}th cycle".format(i)
+		dut.raddr <= testAddrs[i]
+		await Timer(1000, units='us')
+		result.append(dut.rdata.value)
+	print(testValues)
+	print(result)

@@ -8,6 +8,7 @@ module sram(clk, raddr, rdata, waddr, wdata, we);
 	input [DATA_WIDTH-1:0] wdata;
 	output [DATA_WIDTH-1:0] rdata;
 
+	reg [DATA_WIDTH-1:0] rdata_reg;
 	reg [DATA_WIDTH-1:0] sram_data [0:2**ADDR_WIDTH-1];
 
 	always @ (posedge clk) begin
@@ -15,5 +16,11 @@ module sram(clk, raddr, rdata, waddr, wdata, we);
 			sram_data[waddr] <= wdata;
 		end
 	end
-	assign rdata = sram_data[raddr];
+
+	// always @ (raddr) begin
+	// 	rdata_reg <= sram_data[raddr];
+	// end
+
+	// assign rdata = rdata_reg;
+	assign rdata = sram_data[rdata];
 endmodule 
