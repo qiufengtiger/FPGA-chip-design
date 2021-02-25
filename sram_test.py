@@ -4,39 +4,45 @@ from cocotb.clock import Clock
 from cocotb.triggers import FallingEdge
 from cocotb.triggers import RisingEdge
 from cocotb.triggers import Timer
+import os
 
 @cocotb.test()
 async def test_sram(dut):
 	data_width = dut.DATA_WIDTH.value.integer
 	addr_width = dut.ADDR_WIDTH.value.integer
 	dut._log.info("Found %d entry RAM by %d bits wide" % (addr_width, data_width))
-	clock = Clock(dut.clk, 10, units="us")
+	clock = Clock(dut.clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
-	# initialization
-	testValues = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
-	testAddrs = []
-	for i in range(10):
-		# testValues.append(random.randint(0, 1))
-		testAddrs.append(random.randint(0, 15))
+	testSize = 100
 
-	for i in range(10):
-		dut.we <= 1
+	# initialization
+	testValues = []
+	for i in range(testSize):
+		testValues.append(random.randint(0, 1))
+	testAddrs = list(range(0, 2**addr_width-1))
+	random.shuffle(testAddrs)
+
+	for i in range(testSize):
+		# await FallingEdge(dut.clk)
 		dut.waddr <= testAddrs[i]
 		dut.wdata <= testValues[i]
-		dut._log.info("waddr = %s, wdata = %s, i = %s, input = %s" % (dut.waddr.value, dut.wdata.value, i, testValues[i]))
-		await FallingEdge(dut.clk)
+		dut.we <= 1
+		await RisingEdge(dut.clk)
 		dut.we <= 0
 
+	await Timer(100000, units='ps')
+
 	result = []
-	for i in range(0, 10):
-		# dut.raddr <= testAddrs[i]
-		# await Timer(100, units='ps')
-		# result = dut.rdata.value
-		# dut._log.info("raddr = %s, rdata = %s, i = %s, expected = %s" % (dut.raddr.value, result, i, testValues[i]))
-		# assert result == testValues[i], "output was incorrect on the {}th cycle".format(i)
+	result2 = []
+	for i in range(testSize):
 		dut.raddr <= testAddrs[i]
-		await Timer(1000, units='us')
+		await Timer(10, units='ps')
 		result.append(dut.rdata.value)
-	print(testValues)
-	print(result)
+		assert testValues[i] == dut.rdata.value
+
+	for i in range(testSize):
+		dut.raddr <= testAddrs[i]
+		await Timer(10, units='ps')
+		result2.append(dut.rdata.value)
+		assert testValues[i] == dut.rdata.value
