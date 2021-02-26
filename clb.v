@@ -2,16 +2,24 @@
 
 `include "./sram.v"
 
-module lut(clk, set, set_in, in, out);
-	parameter WIDTH = 2;
+module lut(clk, set, set_in, is_comb, in, out);
+	parameter WIDTH = 4;
 
 	input clk, set;
 	input [WIDTH-1:0] set_in;
 	input [WIDTH-1:0] in;
 	output [WIDTH-1:0] out;
 
-	sram #(ADDR_WIDTH = WIDTH, DATA_WIDTH = 1) lut_data(.clk(clk), .raddr(in), .rdata(out), .waddr(in), .wdata(set_in), .we(set)); 
-	
+	wire lut_out;
+	reg lut_ff;
+
+	sram #(ADDR_WIDTH = WIDTH, DATA_WIDTH = 1) lut_data(.clk(clk), .raddr(in), .rdata(lut_out), .waddr(in), .wdata(set_in), .we(set)); 
+	mux #(1) lut_mux(.in1(lut_data), .in0(lut_ff), .select(is_comb), .out(out));
+
+	always @ (posedge clk) begin
+		lut_ff <= lut_out;
+	end
+
 endmodule
 
 

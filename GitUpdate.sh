@@ -9,3 +9,4 @@ git add Makefile
 git add sram_test.py
 git add clb.v
 git add sram.v
+git add README

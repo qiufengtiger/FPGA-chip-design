@@ -1,3 +1,4 @@
+all: 
 CWD=$(shell pwd)
 
 TOPLEVEL_LANG ?=verilog
@@ -11,6 +12,7 @@ else
   $(error "A valid value (verilog or vhdl) was not provided for TOPLEVEL_LANG=$(TOPLEVEL_LANG)")
 endif
 
+# sram
 export ADDR_WIDTH = 16
 export DATA_WIDTH = 1
 
@@ -21,18 +23,12 @@ COCOTB_HDL_TIMEPRECISION=1us
 
 CUSTOM_SIM_DEPS=$(CWD)/Makefile
 
-# ifeq ($(SIM),icarus)
-COMPILE_ARGS += -Psram.ADDR_WIDTH=$(ADDR_WIDTH) -Psram.DATA_WIDTH=$(DATA_WIDTH)
-# endif
-# ifeq ($(SIM),questa)
-#     SIM_ARGS=-t 1ps
-# endif
-
-# ifneq ($(filter $(SIM),ius xcelium),)
-#     SIM_ARGS += -v93
-# endif
-
-# SIM_ARGS += sram.ADDR_WIDTH=4
-# SIM_ARGS += sram.DATA_WIDTH=1
+ifeq ($(TOPLEVEL),sram)
+	COMPILE_ARGS += -Psram.ADDR_WIDTH=$(ADDR_WIDTH) -Psram.DATA_WIDTH=$(DATA_WIDTH)
+endif
 
 include $(shell cocotb-config --makefiles)/Makefile.sim
+
+clean::
+	rm -rf ./__pycache__ ./sim_build
+	rm -f results.xml
