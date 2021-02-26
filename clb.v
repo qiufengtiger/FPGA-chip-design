@@ -1,23 +1,24 @@
 // https://ieeexplore.ieee.org/document/500200
 
 `include "./sram.v"
+`include "./basic-gates.v"
 
-module lut(clk, set, set_in, is_comb, in, out);
+module lut(clk, set, set_in, is_comb, lut_in, out);
 	parameter WIDTH = 4;
 
-	input clk, set;
+	input clk, set, is_comb;
 	input [WIDTH-1:0] set_in;
-	input [WIDTH-1:0] in;
-	output [WIDTH-1:0] out;
+	input [WIDTH-1:0] lut_in;
+	output out;
 
-	wire lut_out;
+	wire lut_table_out;
 	reg lut_ff;
 
-	sram #(ADDR_WIDTH = WIDTH, DATA_WIDTH = 1) lut_data(.clk(clk), .raddr(in), .rdata(lut_out), .waddr(in), .wdata(set_in), .we(set)); 
-	mux #(1) lut_mux(.in1(lut_data), .in0(lut_ff), .select(is_comb), .out(out));
+	sram #(WIDTH, 1) lut_data(.clk(clk), .raddr(lut_in), .rdata(lut_table_out), .waddr(lut_in), .wdata(set_in), .we(set)); 
+	mux #(1) lut_mux(.in1(lut_table_out), .in0(lut_ff), .select(is_comb), .out(out));
 
 	always @ (posedge clk) begin
-		lut_ff <= lut_out;
+		lut_ff <= lut_table_out;
 	end
 
 endmodule

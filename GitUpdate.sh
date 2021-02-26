@@ -6,7 +6,7 @@ git add sim-test-example/dff.v
 git add sim-test-example/dff_cocotb.py
 git add basic-gates.v
 git add Makefile
-git add sram_test.py
+git add *_test.py
 git add clb.v
 git add sram.v
 git add README
