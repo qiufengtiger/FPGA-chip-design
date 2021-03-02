@@ -5,7 +5,7 @@ TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 FILENAME = clb
-TOPLEVEL = lut
+TOPLEVEL = ble
 
 ifeq ($(TOPLEVEL_LANG),verilog)
   VERILOG_SOURCES =$(CWD)/$(FILENAME).v
@@ -30,7 +30,7 @@ CUSTOM_SIM_DEPS=$(CWD)/Makefile
 
 ifeq ($(TOPLEVEL),sram)
 	COMPILE_ARGS += -Psram.ADDR_WIDTH=$(ADDR_WIDTH) -Psram.DATA_WIDTH=$(DATA_WIDTH)
-else ifeq ($(TOPLEVEL),lut)
+else ifeq ($(TOPLEVEL),ble)
 	COMPILE_ARGS += -Plut.WIDTH=$(WIDTH)
 endif
 

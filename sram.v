@@ -17,10 +17,5 @@ module sram(clk, raddr, rdata, waddr, wdata, we);
 		end
 	end
 
-	// always @ (raddr) begin
-	// 	rdata_reg <= sram_data[raddr];
-	// end
-
-	// assign rdata = rdata_reg;
 	assign rdata = sram_data[raddr];
 endmodule 
