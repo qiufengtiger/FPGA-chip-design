@@ -5,12 +5,12 @@
 
 module clb(clk, in, out, scan_in, scan_out);
 	parameter CLB_WIDTH = 4;
-	parameter CLB_NUM = 2;
+	parameter CLB_NUM = 10;
 	input clk, scan_in;
 	input [CLB_WIDTH-1:0] in;
 	// 1 output per ble
 	output [CLB_NUM-1:0] out;
-	
+
 
 endmodule
 

@@ -1,11 +1,16 @@
 all: 
+# force clean before compile
+$(shell rm -rf ./__pycache__ ./sim_build)
+$(shell rm -f results.xml)
+
 CWD=$(shell pwd)
 
 TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
-FILENAME = clb
-TOPLEVEL = ble
+# be sure to modify this when testing different module
+FILENAME = sram
+TOPLEVEL = sram
 
 ifeq ($(TOPLEVEL_LANG),verilog)
   VERILOG_SOURCES =$(CWD)/$(FILENAME).v
