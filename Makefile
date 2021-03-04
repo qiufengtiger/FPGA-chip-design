@@ -9,8 +9,8 @@ TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = sram
-TOPLEVEL = sram
+FILENAME = clb
+TOPLEVEL = ble
 
 ifeq ($(TOPLEVEL_LANG),verilog)
   VERILOG_SOURCES =$(CWD)/$(FILENAME).v
@@ -21,7 +21,7 @@ else
 endif
 
 # sram
-export ADDR_WIDTH = 16
+export ADDR_WIDTH = 4
 export DATA_WIDTH = 1
 
 # clb
