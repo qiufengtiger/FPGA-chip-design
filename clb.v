@@ -40,7 +40,7 @@ module ble(clk, is_comb, lut_in, out, scan_in, scan_out, scan_en);
 
 endmodule
 
-module clb_complete_conn(clk, complete_in, out, scan_in, scan_out, scan_en);
+module clb_complete_conn(clk, complete_in, out, scan_in, scan_out, scan_en, config_test, c1);
 	parameter IN_WIDTH = 5;
 	parameter OUT_WIDTH = 4;
 	parameter MUX_SEL_WIDTH = 3;
@@ -48,7 +48,8 @@ module clb_complete_conn(clk, complete_in, out, scan_in, scan_out, scan_en);
 	input [IN_WIDTH-1:0] complete_in;
 	input clk, scan_in, scan_en;
 	output [OUT_WIDTH-1:0] out;
-	output scan_out;
+	output scan_out, c1;
+	output [(MUX_SEL_WIDTH * OUT_WIDTH)-1:0] config_test;
 
 	wire [(MUX_SEL_WIDTH * OUT_WIDTH)-1:0] mux_config;
 
@@ -63,6 +64,8 @@ module clb_complete_conn(clk, complete_in, out, scan_in, scan_out, scan_en);
 		end
 	endgenerate
 
+	assign config_test = mux_config;
+	assign c1 = mux_config[0];
 
 endmodule
 

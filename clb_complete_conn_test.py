@@ -29,9 +29,12 @@ async def test_complete_conn(dut):
 	testMuxSelBinary = [list(item) for item in testMuxSelBinary]
 	testMuxSelBit = sum(testMuxSelBinary, [])
 	testMuxSelBit = [int(bit) for bit in testMuxSelBit]
-
+	# MSB -> LSB
+	testMuxSelBit.reverse();
+	print(testMuxSelBit)
 	for i in range(sel_width * out_width):
 		# push the last value into the scan chain
+		# scan in MSB first
 		dut.scan_in <= testMuxSelBit.pop(-1)
 		dut.scan_en <= 1
 		await RisingEdge(dut.clk)
@@ -39,9 +42,10 @@ async def test_complete_conn(dut):
 
 	await Timer(100000, units='ps')
 
+	print(dut.config_test.value)
+	print(dut.c1.value)
+
 	# test in gen
-	# a = 1
-	# b = 0
 	testIn = []
 	for i in range(in_width):
 		testIn.append(random.randint(0, 1))
@@ -55,8 +59,8 @@ async def test_complete_conn(dut):
 		# testGoldenOut[i] = testIn[int("".join(str(item) for item in testMuxSel[3 * i : 3 * i + 3]), 2)]
 		testGoldenOut[i] = testIn[testMuxSel[i]]
 
+	
 	print(testMuxSel)
-	# print(testMuxSelBit)
 	print(testIn)
 	print(testGoldenOut)
 	# testIn.reverse()
@@ -66,7 +70,7 @@ async def test_complete_conn(dut):
 	# result2 = []
 	testIn.reverse()
 	dut.complete_in <= int("".join(str(bit) for bit in testIn), 2)
-	await Timer(10, units='ps')
+	await Timer(100, units='ps')
 	result.append(dut.out.value)
 	# assert testValues[i] == dut.rdata.value
 	print(result)
