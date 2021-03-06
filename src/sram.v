@@ -22,10 +22,10 @@ module sram(clk, raddr, rdata, waddr, wdata, we, scan_in, scan_out, scan_en);
 			sram_data[waddr] <= wdata;
 		end
 		else if(scan_en) begin
-			scan_out_value <= sram_data[(2**ADDR_WIDTH)-1];
+			// scan_out_value <= sram_data[(2**ADDR_WIDTH)-1];
 			sram_data <= {sram_data[(2**ADDR_WIDTH)-2:0], scan_in};
 		end 
 	end
-	// assign scan_out = scan_out_value;
+	assign scan_out = sram_data[(2**ADDR_WIDTH)-1];
 	assign rdata = sram_data[raddr];
 endmodule 
