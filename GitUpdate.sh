@@ -2,9 +2,9 @@ git add GitUpdate.sh
 git add .gitignore
 git add sim-test-example/README
 git add sim-test-example/Makefile
-git add sim-test-example/dff.v
-git add sim-test-example/dff_cocotb.py
+git add sim-test-example/*.v
+git add sim-test-example/*.py
 git add Makefile
-git add *_test.py
-git add ./*.v
+git add sim/*_test.py
+git add src/*.v
 git add README

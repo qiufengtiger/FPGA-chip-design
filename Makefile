@@ -4,6 +4,7 @@ $(shell rm -rf ./__pycache__ ./sim_build)
 $(shell rm -f results.xml)
 
 CWD=$(shell pwd)
+SRC_DIR = $(CWD)/src
 
 TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
@@ -12,13 +13,10 @@ SIM ?= icarus
 FILENAME = clb
 TOPLEVEL = clb_complete_conn
 
-ifeq ($(TOPLEVEL_LANG),verilog)
-  VERILOG_SOURCES =$(CWD)/$(FILENAME).v
-else ifeq ($(TOPLEVEL_LANG),vhdl)
-  VHDL_SOURCES =$(CWD)/$(FILENAME).vhdl
-else
-  $(error "A valid value (verilog or vhdl) was not provided for TOPLEVEL_LANG=$(TOPLEVEL_LANG)")
-endif
+VERILOG_SOURCES = $(SRC_DIR)/$(FILENAME).v
+
+
+export PYTHONPATH = $(CWD)/sim
 
 # sram
 export ADDR_WIDTH = 4
@@ -38,6 +36,8 @@ COCOTB_HDL_TIMEPRECISION=1us
 
 CUSTOM_SIM_DEPS=$(CWD)/Makefile
 
+COMPILE_ARGS +=-I$(SRC_DIR)
+
 ifeq ($(TOPLEVEL),sram)
 	COMPILE_ARGS += -Psram.ADDR_WIDTH=$(ADDR_WIDTH) -Psram.DATA_WIDTH=$(DATA_WIDTH)
 else ifeq ($(TOPLEVEL),ble)
@@ -47,7 +47,8 @@ else ifeq ($(TOPLEVEL),clb_complete_conn)
 endif
 
 include $(shell cocotb-config --makefiles)/Makefile.sim
+# $(shell cd ..)
 
 clean::
-	rm -rf ./__pycache__ ./sim_build
+	rm -rf ./sim/__pycache__ ./sim_build
 	rm -f results.xml
