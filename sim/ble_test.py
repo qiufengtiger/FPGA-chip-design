@@ -16,34 +16,34 @@ async def test_ble(dut):
 	clock = Clock(dut.clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
-	testSize = 2 ** width
+	test_size = 2 ** width
 
 	# initialization
-	testValues = []
-	for i in range(testSize):
-		testValues.append(random.randint(0, 1))
-	testAddrs = list(range(0, 2**width))
+	test_values = []
+	for i in range(test_size):
+		test_values.append(random.randint(0, 1))
+	test_addrs = list(range(0, 2**width))
 	
 	# 0 => typical waddr / wdata, 1 => scan chain
-	testMode = SCAN_CHAIN
+	test_mode = SCAN_CHAIN
 
-	assert testMode is PORT or SCAN_CHAIN, "test mode not defined"
-	if testMode is PORT:
-		random.shuffle(testAddrs)
-		for i in range(testSize):
+	assert test_mode is PORT or SCAN_CHAIN, "test mode not defined"
+	if test_mode is PORT:
+		random.shuffle(test_addrs)
+		for i in range(test_size):
 			# await FallingEdge(dut.clk)
-			dut.lut_in <= testAddrs[i]
-			dut.set_in <= testValues[i]
+			dut.lut_in <= test_addrs[i]
+			dut.set_in <= test_values[i]
 			dut.set <= 1
 			await RisingEdge(dut.clk)
 			dut.set <= 0
 
-	elif testMode is SCAN_CHAIN:
-		testValuesCopy = testValues.copy()
-		# testValues.reverse()
-		for i in range(testSize):
+	elif test_mode is SCAN_CHAIN:
+		test_valuesCopy = test_values.copy()
+		# test_values.reverse()
+		for i in range(test_size):
 			# push the last value into the scan chain
-			dut.scan_in <= testValuesCopy.pop(-1)
+			dut.scan_in <= test_valuesCopy.pop(-1)
 			dut.scan_en <= 1
 			await RisingEdge(dut.clk)
 			dut.scan_en <= 0
@@ -54,15 +54,15 @@ async def test_ble(dut):
 	result2 = []
 	dut.set <= 0
 	dut.is_comb <= 1
-	for i in range(testSize):
-		dut.lut_in <= testAddrs[i]
+	for i in range(test_size):
+		dut.lut_in <= test_addrs[i]
 		await Timer(10, units='ps')
 		result.append(dut.out.value)
-		dut._log.info("expected: %s, actual = %s" % (testValues[i], dut.out.value))
-		assert testValues[i] == dut.out.value
+		dut._log.info("expected: %s, actual = %s" % (test_values[i], dut.out.value))
+		assert test_values[i] == dut.out.value
 
-	for i in range(testSize):
-		dut.lut_in <= testAddrs[i]
+	for i in range(test_size):
+		dut.lut_in <= test_addrs[i]
 		await Timer(10, units='ps')
 		result2.append(dut.out.value)
-		assert testValues[i] == dut.out.value
+		assert test_values[i] == dut.out.value
