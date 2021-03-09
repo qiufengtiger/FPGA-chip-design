@@ -31,7 +31,7 @@ endmodule
 module ble(clk, is_comb, lut_in, out, scan_in, scan_out, scan_en);
 	parameter WIDTH = 4;
 
-	input clk, set, is_comb, scan_in, scan_en;
+	input clk, is_comb, scan_in, scan_en;
 	input [WIDTH-1:0] lut_in;
 	output out, scan_out;
 
@@ -65,7 +65,7 @@ module clb_complete_conn(clk, complete_in, out, scan_in, scan_out, scan_en);
 
 	genvar i;
 	generate
-		for(i = 0; i < OUT_WIDTH; i++) begin
+		for(i = 0; i < OUT_WIDTH; i = i + 1) begin
 			// wire [] mux_in = {{(2**MUX_SEL_WIDTH - IN_WIDTH){1'b0}}, complete_in};
 			mux_1bit #(IN_WIDTH, MUX_SEL_WIDTH) inst_complete_mux(.in(complete_in), .out(out[i]), .select(mux_config[(i * 3 + 2):i * 3]));
 		end

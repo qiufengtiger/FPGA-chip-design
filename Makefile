@@ -5,15 +5,24 @@ $(shell rm -f results.xml)
 
 CWD=$(shell pwd)
 SRC_DIR = $(CWD)/src
+MAPPED_SRC_DIR = $(CWD)/syn_mapped
 
 TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = clb
-TOPLEVEL = clb
+FILENAME = clb_top
+TOPLEVEL = clb_top
+IS_MAPPED = 1
 
-VERILOG_SOURCES = $(SRC_DIR)/$(FILENAME).v
+ifeq ($(IS_MAPPED), 0)
+	COMPILE_ARGS =-I$(SRC_DIR)
+	VERILOG_SOURCES = $(SRC_DIR)/$(FILENAME).v
+else ifeq ($(IS_MAPPED), 1)
+	FILENAME_MAPPED = $(FILENAME)_mapped
+	COMPILE_ARGS =-I$(MAPPED_SRC_DIR)
+	VERILOG_SOURCES = $(MAPPED_SRC_DIR)/$(FILENAME_MAPPED).v
+endif
 
 
 export PYTHONPATH = $(CWD)/sim
@@ -41,7 +50,7 @@ COCOTB_HDL_TIMEPRECISION=1us
 
 CUSTOM_SIM_DEPS=$(CWD)/Makefile
 
-COMPILE_ARGS =-I$(SRC_DIR)
+
 
 ifeq ($(TOPLEVEL),sram)
 	COMPILE_ARGS += -Psram.ADDR_WIDTH=$(ADDR_WIDTH) -Psram.DATA_WIDTH=$(DATA_WIDTH)
@@ -52,6 +61,8 @@ else ifeq ($(TOPLEVEL),clb_complete_conn)
 else ifeq ($(TOPLEVEL),clb)
 	COMPILE_ARGS += -Pclb.CLB_IN_WIDTH=$(CLB_IN_WIDTH) -Pclb.CLB_BLE_NUM=$(CLB_BLE_NUM) -Pclb.CONN_SEL_WIDTH=$(CONN_SEL_WIDTH)
 endif
+
+COMPILE_ARGS += -gspecify
 
 include $(shell cocotb-config --makefiles)/Makefile.sim
 # $(shell cd ..)
