@@ -13,7 +13,7 @@ module sram(clk, raddr, rdata, waddr, wdata, we, scan_in, scan_out, scan_en);
 	// reg [DATA_WIDTH-1:0] sram_data [0:(2**ADDR_WIDTH)-1];
 	// reg [DATA_WIDTH-1:0] scan_out_value;
 
-	reg scan_out_value;
+	// reg scan_out_value;
 	reg [(2**ADDR_WIDTH)-1 : 0] sram_data;
 
 

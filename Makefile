@@ -11,9 +11,9 @@ TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = clb_top
-TOPLEVEL = clb_top
-IS_MAPPED = 1
+FILENAME = clb
+TOPLEVEL = clb
+IS_MAPPED = 0
 
 ifeq ($(IS_MAPPED), 0)
 	COMPILE_ARGS =-I$(SRC_DIR)
@@ -62,7 +62,7 @@ else ifeq ($(TOPLEVEL),clb)
 	COMPILE_ARGS += -Pclb.CLB_IN_WIDTH=$(CLB_IN_WIDTH) -Pclb.CLB_BLE_NUM=$(CLB_BLE_NUM) -Pclb.CONN_SEL_WIDTH=$(CONN_SEL_WIDTH)
 endif
 
-COMPILE_ARGS += -gspecify
+# COMPILE_ARGS += -gspecify
 
 include $(shell cocotb-config --makefiles)/Makefile.sim
 # $(shell cd ..)
