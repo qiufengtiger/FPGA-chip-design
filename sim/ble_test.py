@@ -52,7 +52,6 @@ async def test_ble(dut):
 
 	result = []
 	result2 = []
-	dut.set <= 0
 	dut.is_comb <= 1
 	for i in range(test_size):
 		dut.lut_in <= test_addrs[i]

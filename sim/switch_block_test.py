@@ -37,10 +37,13 @@ async def test_sb(dut):
 	left_clb_in = random.randint(0, 1)
 	right_clb_in = random.randint(0, 1)
 
+	print(left_select + right_select + top_select + bottom_select)
+
 	bitstream = left_binary + right_binary + top_binary + bottom_binary;
+	print(bitstream)
 	total_scan_size = len(bitstream)
 
-	print(bitstream)
+	# print(bitstream)
 
 	# scan in config
 	dut.scan_en <= 1
@@ -70,6 +73,9 @@ async def test_sb(dut):
 	right_out.big_endian = False
 	top_out.big_endian = False
 	bottom_out.big_endian = False
+
+	# left_out[0] => LSB
+	# left_out.integer
 
 	# convert int to cocotb BinaryValue for easy bit select
 	left_in = BinaryValue(left_in, n_bits=4, bigEndian=False)

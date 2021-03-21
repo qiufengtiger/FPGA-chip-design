@@ -1,5 +1,7 @@
 # convert int list to binary list, in reversed order to facilitate scanning
+#                     index 0  1                  MSB
 # example: [2, 0, 1, 3] -> [0, 1, 0, 0, 1, 0, 1, 1]
+# reg[1:0] => 10
 def int_list_to_bitstream(input_list, bit_length):
 	format_string = "{0:0%db}" % bit_length
 	binary = [format_string.format(item) for item in input_list]

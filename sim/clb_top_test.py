@@ -19,7 +19,7 @@ async def test_clb_top(dut):
 	in_width = 4
 	ble_num = 1
 	sel_width = 3
-	# dut._log.info("in_w=%d, #ble=%d, sel_w=%d" % (in_width, ble_num, sel_width))
+	dut._log.info("in_w=%d, #ble=%d, sel_w=%d" % (in_width, ble_num, sel_width))
 	clock = Clock(dut.clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
@@ -85,65 +85,5 @@ async def test_clb_top(dut):
 
 		for test_in, i in enumerate(input_bits):
 			dut.clb_in <= test_in
-			# await Timer(10, units='ps')
+			await Timer(10, units='ps')
 			assert dut.out.value == test_golden_out[i], "expecting %d, getting %d" % (test_golden_out[i], dut.out.value)
-
-
-
-
-	# testSize = sel_width * out_width
-	# print(addr_width)
-	# initialization
-	# testMuxSel = []
-	# for i in range(out_width):
-	# 	testMuxSel.append(random.randint(0, in_width - 1))
-	# convert int to binary array for scan in
-	# testMuxSelBinary = ["{0:03b}".format(item) for item in testMuxSel]
-	# testMuxSelBinary = [list(item) for item in testMuxSelBinary]
-	# testMuxSelBit = sum(testMuxSelBinary, [])
-	# testMuxSelBit = [int(bit) for bit in testMuxSelBit]
-	# # MSB -> LSB
-	# testMuxSelBit.reverse();
-	# print(testMuxSelBit)
-	# for i in range(sel_width * out_width):
-	# 	# push the last value into the scan chain
-	# 	# scan in MSB first
-	# 	dut.scan_in <= testMuxSelBit.pop(-1)
-	# 	dut.scan_en <= 1
-	# 	await RisingEdge(dut.clk)
-	# 	dut.scan_en <= 0
-
-	# await Timer(100000, units='ps')
-
-	# print(dut.config_test.value)
-	# print(dut.c1.value)
-
-	# # test in gen
-	# testIn = []
-	# for i in range(in_width):
-	# 	testIn.append(random.randint(0, 1))
-	# # for i in range(0, (2**sel_width - in_width)):
-	# # 	testIn.append(0) 
-
-	# # test golden out gen
-	# testGoldenOut = [0] * out_width
-	# for i in range(out_width):
-	# 	# print(int("".join(str(item) for item in testMuxSel[3 * i : 3 * i + 3]), 2))
-	# 	# testGoldenOut[i] = testIn[int("".join(str(item) for item in testMuxSel[3 * i : 3 * i + 3]), 2)]
-	# 	testGoldenOut[i] = testIn[testMuxSel[i]]
-
-	
-	# print(testMuxSel)
-	# print(testIn)
-	# print(testGoldenOut)
-	# # testIn.reverse()
-	# # print(int("".join(str(bit) for bit in testIn), 2))
-
-	# result = []
-	# # result2 = []
-	# testIn.reverse()
-	# dut.complete_in <= int("".join(str(bit) for bit in testIn), 2)
-	# await Timer(100, units='ps')
-	# result.append(dut.out.value)
-	# # assert testValues[i] == dut.rdata.value
-	# print(result)

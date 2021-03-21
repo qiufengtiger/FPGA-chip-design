@@ -28,7 +28,7 @@ async def test_clb(dut):
 	is_comb_size = ble_num
 	complete_bit_size = sel_width * in_width
 	lut_size = 2**in_width
-	total_scan_size = complete_bit_size + is_comb_size + lut_size # 12 + 1 + 16 = 29
+	# total_scan_size = complete_bit_size + is_comb_size + lut_size # 12 + 1 + 16 = 29
 	is_comb = [1]
 	# direct conn
 	complete_mux = [0, 1, 2, 3]
@@ -67,8 +67,10 @@ async def test_clb(dut):
 				this_golden_out = (in_0 + in_1 + in_2 + in_3) & 1
 			test_golden_out.append(this_golden_out)
 
-
+		# [1, 0, 1, 1] etc
+		# list(input_string)
 		bitstream = is_comb + complete_mux_binary + test_golden_out
+		total_scan_size = len(bitstream)
 		print(bitstream)
 
 		dut.scan_en <= 1
