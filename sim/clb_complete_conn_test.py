@@ -8,9 +8,9 @@ import os
 
 @cocotb.test()
 async def test_complete_conn(dut):
-	in_width = dut.IN_WIDTH.value.integer
-	out_width = dut.OUT_WIDTH.value.integer
-	sel_width = dut.MUX_SEL_WIDTH.value.integer
+	in_width = dut.IN_WIDTH.value
+	out_width = dut.OUT_WIDTH.value
+	sel_width = dut.MUX_SEL_WIDTH.value
 	dut._log.info("in_w=%d, out_w=%d, sel_w=%d" % (in_width, out_width, sel_width))
 	clock = Clock(dut.clk, 10000, units="ps")
 	cocotb.fork(clock.start())

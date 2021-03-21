@@ -11,7 +11,7 @@ SCAN_CHAIN = 1
 
 @cocotb.test()
 async def test_ble(dut):
-	width = dut.WIDTH.value.integer
+	width = dut.WIDTH.value
 	dut._log.info("Found %d bits LUT" % (width))
 	clock = Clock(dut.clk, 10000, units="ps")
 	cocotb.fork(clock.start())

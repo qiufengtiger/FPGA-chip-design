@@ -11,8 +11,8 @@ TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = connection_block
-TOPLEVEL = connection_block
+FILENAME = clb
+TOPLEVEL = clb
 IS_MAPPED = 0
 
 ifeq ($(IS_MAPPED), 0)

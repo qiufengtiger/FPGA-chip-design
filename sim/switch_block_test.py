@@ -13,7 +13,7 @@ async def test_sb(dut):
 	clock = Clock(dut.clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
-	width = dut.CHANNEL_ONEWAY_WIDTH.value.integer
+	width = dut.CHANNEL_ONEWAY_WIDTH.value
 	dut._log.info("Found SB with channel oneway width %d" % (width))
 
 	# random config generation

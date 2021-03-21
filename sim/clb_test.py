@@ -4,7 +4,6 @@ from cocotb.clock import Clock
 from cocotb.triggers import FallingEdge
 from cocotb.triggers import RisingEdge
 from cocotb.triggers import Timer
-from 
 import os
 
 AND = 0
@@ -17,9 +16,9 @@ ADD = 6
 
 @cocotb.test()
 async def test_clb(dut):
-	in_width = dut.CLB_IN_WIDTH.value.integer
-	ble_num = dut.CLB_BLE_NUM.value.integer
-	sel_width = dut.CONN_SEL_WIDTH.value.integer
+	in_width = dut.CLB_IN_WIDTH.value
+	ble_num = dut.CLB_BLE_NUM.value
+	sel_width = dut.CONN_SEL_WIDTH.value
 	dut._log.info("in_w=%d, #ble=%d, sel_w=%d" % (in_width, ble_num, sel_width))
 	clock = Clock(dut.clk, 10000, units="ps")
 	cocotb.fork(clock.start())

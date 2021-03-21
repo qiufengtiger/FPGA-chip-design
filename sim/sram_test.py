@@ -13,7 +13,7 @@ SCAN_CHAIN = 1
 async def test_sram(dut):
 	# data_width = dut.DATA_WIDTH.value.integer
 	data_width = 1
-	addr_width = dut.ADDR_WIDTH.value.integer
+	addr_width = dut.ADDR_WIDTH.value
 	dut._log.info("Found %d entry RAM by %d bits wide" % (addr_width, data_width))
 	clock = Clock(dut.clk, 10000, units="ps")
 	cocotb.fork(clock.start())
