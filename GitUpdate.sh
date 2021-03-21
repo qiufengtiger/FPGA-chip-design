@@ -6,6 +6,7 @@ git add sim-test-example/*.v
 git add sim-test-example/*.py
 git add Makefile
 git add sim/*_test.py
+git add sim/helper.py
 git add src/*.v
 git add syn_mapped/*.v
 git add README
