@@ -4,6 +4,13 @@
 module switch_block(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, left_clb_in, right_clb_in, scan_in, scan_out, scan_en, test_out);
 	parameter CHANNEL_ONEWAY_WIDTH = 4;
 
+	// channel bit numbering:
+	// 0
+	// |
+	// 3
+	//  0 - 3
+	// refer to this slide for SB block diagram
+	// https://docs.google.com/presentation/d/1zSjzy-MxLvTViwhgN_G6zG-wbjkTXp0XCrzEKIEBBog/edit#slide=id.gc5f0a1aeb8_1_27
 	input [CHANNEL_ONEWAY_WIDTH-1:0] left_in, right_in, top_in, bottom_in;
 	output [CHANNEL_ONEWAY_WIDTH-1:0] left_out, right_out, top_out, bottom_out;
 	input clk, scan_in, scan_en, left_clb_in, right_clb_in;
@@ -24,12 +31,6 @@ module switch_block(clk, left_in, right_in, top_in, bottom_in, left_out, right_o
 	// i/o mux inputs are arbitrary arch settings
 	// note to my groupmates: input orderings to mux are changed from the original sv version
 	// input ordering to mux: (clb_in), left, right, top, bottom, ignore current channel
-	//
-	// channel bit numbering:
-	// 0
-	// |
-	// 3
-	//  0 - 3
 	//
 	// left
 	mux_1bit #(3, 2) inst_mux_0_left(.in({right_in[0], top_in[1], bottom_in[2]}), .select(mux_ctrl_left[1:0]), .out(left_out[0]));
