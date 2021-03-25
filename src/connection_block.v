@@ -1,6 +1,8 @@
 // `include "basic-gates.v"
 // `include "shift_reg.v"
 
+// only outputting to clb / io block
+// i/o block input are routed to sb
 module connection_block(clk, tracks_0, tracks_1, out_0, out_1, scan_in, scan_out, scan_en);
 	parameter CHANNEL_ONEWAY_WIDTH = 4;
 
