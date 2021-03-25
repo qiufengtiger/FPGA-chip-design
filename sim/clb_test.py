@@ -20,7 +20,7 @@ async def test_clb(dut):
 	ble_num = dut.CLB_BLE_NUM.value
 	sel_width = dut.CONN_SEL_WIDTH.value
 	dut._log.info("in_w=%d, #ble=%d, sel_w=%d" % (in_width, ble_num, sel_width))
-	clock = Clock(dut.clk, 10000, units="ps")
+	clock = Clock(dut.scan_clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
 	# test_funcs = [AND, OR, XOR, NAND, NOR, XNOR, ADD]
@@ -88,7 +88,7 @@ async def test_clb(dut):
 			# push the last value into the scan chain
 			# scan in MSB first
 			dut.scan_in <= bitstream.pop(-1)
-			await RisingEdge(dut.clk)
+			await RisingEdge(dut.scan_clk)
 		dut.scan_en <= 0
 
 

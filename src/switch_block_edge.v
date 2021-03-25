@@ -1,3 +1,6 @@
+//
+// deprecated
+//
 
 `include "basic-gates.v"
 `include "shift_reg.v"

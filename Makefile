@@ -11,8 +11,8 @@ TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = switch_block_edge
-TOPLEVEL = switch_block_edge
+FILENAME = tile
+TOPLEVEL = tile
 IS_MAPPED = 0
 
 ifeq ($(IS_MAPPED), 0)

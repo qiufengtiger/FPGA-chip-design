@@ -5,9 +5,9 @@
 // fpga structure:
 //          clockwised order, same as CLB port ordering in VTR
 //        ------------------------------\
-// 			   io0     io1              |
-//		 SB4 \  | 	    |               |
-// io7 - CB3 - tile0 - tile1 - io2      |
+// 			                            |
+//		 SB4 \    	                    |
+// io7 - CB3 - tile0 - tile1            |
 //		 SB3	|	    |				v
 // io6 - CB2 - tile3 - tile2 - io3
 //		  |	    |	    |	\

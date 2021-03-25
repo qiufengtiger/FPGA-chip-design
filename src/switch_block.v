@@ -1,7 +1,7 @@
 // `include "basic-gates.v"
 // `include "shift_reg.v"
 
-module switch_block(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, left_clb_in, right_clb_in, scan_in, scan_out, scan_en);
+module switch_block(scan_clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, left_clb_in, right_clb_in, scan_in, scan_out, scan_en);
 	parameter CHANNEL_ONEWAY_WIDTH = 4;
 
 	
@@ -9,17 +9,17 @@ module switch_block(clk, left_in, right_in, top_in, bottom_in, left_out, right_o
 	// https://docs.google.com/presentation/d/1zSjzy-MxLvTViwhgN_G6zG-wbjkTXp0XCrzEKIEBBog/edit#slide=id.gc5f0a1aeb8_1_27
 	input [CHANNEL_ONEWAY_WIDTH-1:0] left_in, right_in, top_in, bottom_in;
 	output [CHANNEL_ONEWAY_WIDTH-1:0] left_out, right_out, top_out, bottom_out;
-	input clk, scan_in, scan_en, left_clb_in, right_clb_in;
+	input scan_clk, scan_in, scan_en, left_clb_in, right_clb_in;
 	output scan_out;
 
 	wire [CHANNEL_ONEWAY_WIDTH*2-1:0] mux_ctrl_left, mux_ctrl_right, mux_ctrl_top, mux_ctrl_bottom; 
 	wire scan_conn_0, scan_conn_1, scan_conn_2;
 
 	// each channel has 4 * 3:1 or 4:1 mux, which needs 4 * 2 control bits
-	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_left(.clk(clk), .out(mux_ctrl_left), .scan_in(scan_in), .scan_out(scan_conn_0), .scan_en(scan_en));
-	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_right(.clk(clk), .out(mux_ctrl_right), .scan_in(scan_conn_0), .scan_out(scan_conn_1), .scan_en(scan_en));
-	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_top(.clk(clk), .out(mux_ctrl_top), .scan_in(scan_conn_1), .scan_out(scan_conn_2), .scan_en(scan_en));
-	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_bottom(.clk(clk), .out(mux_ctrl_bottom), .scan_in(scan_conn_2), .scan_out(scan_out), .scan_en(scan_en));
+	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_left(.scan_clk(scan_clk), .out(mux_ctrl_left), .scan_in(scan_in), .scan_out(scan_conn_0), .scan_en(scan_en));
+	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_right(.scan_clk(scan_clk), .out(mux_ctrl_right), .scan_in(scan_conn_0), .scan_out(scan_conn_1), .scan_en(scan_en));
+	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_top(.scan_clk(scan_clk), .out(mux_ctrl_top), .scan_in(scan_conn_1), .scan_out(scan_conn_2), .scan_en(scan_en));
+	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_bottom(.scan_clk(scan_clk), .out(mux_ctrl_bottom), .scan_in(scan_conn_2), .scan_out(scan_out), .scan_en(scan_en));
 
 	// i/o mux inputs are arbitrary arch settings
 	// note to my groupmates: input orderings to mux are changed from the original sv version

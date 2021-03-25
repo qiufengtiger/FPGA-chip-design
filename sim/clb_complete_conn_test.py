@@ -12,7 +12,7 @@ async def test_complete_conn(dut):
 	out_width = dut.OUT_WIDTH.value
 	sel_width = dut.MUX_SEL_WIDTH.value
 	dut._log.info("in_w=%d, out_w=%d, sel_w=%d" % (in_width, out_width, sel_width))
-	clock = Clock(dut.clk, 10000, units="ps")
+	clock = Clock(dut.scan_clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
 	# testSize = sel_width * out_width
@@ -33,7 +33,7 @@ async def test_complete_conn(dut):
 		# scan in MSB first
 		dut.scan_in <= test_mux_sel_bit.pop(-1)
 		dut.scan_en <= 1
-		await RisingEdge(dut.clk)
+		await RisingEdge(dut.scan_clk)
 		dut.scan_en <= 0
 
 	await Timer(100000, units='ps')

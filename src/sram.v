@@ -1,9 +1,9 @@
 `timescale 1ns/1ps
-module sram(clk, raddr, rdata, waddr, wdata, we, scan_in, scan_out, scan_en);
+module sram(scan_clk, raddr, rdata, waddr, wdata, we, scan_in, scan_out, scan_en);
 	parameter ADDR_WIDTH = 4;
 	// parameter DATA_WIDTH = 1;
 	
-	input clk, we, scan_en;
+	input scan_clk, we, scan_en;
 	input [ADDR_WIDTH-1:0] raddr, waddr;
 	input wdata, scan_in;
 	output rdata, scan_out;
@@ -17,7 +17,7 @@ module sram(clk, raddr, rdata, waddr, wdata, we, scan_in, scan_out, scan_en);
 	reg [(2**ADDR_WIDTH)-1 : 0] sram_data;
 
 
-	always @ (posedge clk) begin
+	always @ (posedge scan_clk) begin
 		if(we) begin
 			sram_data[waddr] <= wdata;
 		end

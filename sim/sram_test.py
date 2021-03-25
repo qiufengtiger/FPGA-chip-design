@@ -15,7 +15,7 @@ async def test_sram(dut):
 	data_width = 1
 	addr_width = dut.ADDR_WIDTH.value
 	dut._log.info("Found %d entry RAM by %d bits wide" % (addr_width, data_width))
-	clock = Clock(dut.clk, 10000, units="ps")
+	clock = Clock(dut.scan_clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
 	testSize = 2 ** addr_width
@@ -29,10 +29,8 @@ async def test_sram(dut):
 	# 0 => typical waddr / wdata, 1 => scan chain
 	testMode = SCAN_CHAIN
 
-	# print(testAddrs)
-	# print(testValues)
-
 	assert testMode is PORT or SCAN_CHAIN, "test mode not defined"
+	# PORT method is deprecated
 	if testMode is PORT:
 		random.shuffle(testAddrs)
 		for i in range(testSize):
@@ -50,7 +48,7 @@ async def test_sram(dut):
 			# push the last value into the scan chain
 			dut.scan_in <= testValuesCopy.pop(-1)
 			dut.scan_en <= 1
-			await RisingEdge(dut.clk)
+			await RisingEdge(dut.scan_clk)
 			dut.scan_en <= 0
 
 	await Timer(100000, units='ps')

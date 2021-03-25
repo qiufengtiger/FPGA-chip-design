@@ -10,7 +10,7 @@ import os
 
 @cocotb.test()
 async def test_sb(dut):
-	clock = Clock(dut.clk, 10000, units="ps")
+	clock = Clock(dut.scan_clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
 	width = dut.CHANNEL_ONEWAY_WIDTH.value
@@ -51,7 +51,7 @@ async def test_sb(dut):
 		# push the last value into the scan chain
 		# scan in MSB first
 		dut.scan_in <= bitstream.pop(-1)
-		await RisingEdge(dut.clk)
+		await RisingEdge(dut.scan_clk)
 	dut.scan_en <= 0
 
 	# input

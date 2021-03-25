@@ -12,7 +12,7 @@
 //   |     |
 // - CLB - CB -
 //   |     |
-module tile(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
+module tile(clk, scan_clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
 	left_clb_out, left_clb_in, bottom_clb_in, right_sb_in, test_out_x4,
 	top_cb_out, right_cb_out, 
 	clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en);
@@ -22,7 +22,7 @@ module tile(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_
 
 	input [CHANNEL_ONEWAY_WIDTH-1:0] left_in, right_in, top_in, bottom_in;
 	output [CHANNEL_ONEWAY_WIDTH-1:0] left_out, right_out, top_out, bottom_out;
-	input clk, clb_scan_in, clb_scan_en, conn_scan_in, conn_scan_en;
+	input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in, conn_scan_en;
 	input left_clb_in, bottom_clb_in, right_sb_in;
 	output left_clb_out;
 	output clb_scan_out, conn_scan_out, top_cb_out, right_cb_out;
@@ -45,7 +45,7 @@ module tile(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_
 	// clb_scanchain: scan_in -> clb -> scan_out
 	// conn_scanchain: scan_in -> sb -> cb_top -> cb_right -> scan_out
 	switch_block #(CHANNEL_ONEWAY_WIDTH) inst_sb(
-		.clk(clk), 
+		.scan_clk(scan_clk), 
 		.left_in(left_in), 
 		.right_in(right_in), 
 		.top_in(top_in), 
@@ -62,7 +62,7 @@ module tile(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_
 	);
 
 	connection_block #(CHANNEL_ONEWAY_WIDTH) inst_cb_top(
-		.clk(clk), 
+		.scan_clk(scan_clk), 
 		.tracks_0(left_out), 
 		.tracks_1(left_in), 
 		.out_0(top_cb_out), 
@@ -73,7 +73,7 @@ module tile(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_
 	);
 
 	connection_block #(CHANNEL_ONEWAY_WIDTH) inst_cb_right(
-		.clk(clk), 
+		.scan_clk(scan_clk), 
 		.tracks_0(bottom_in), 
 		.tracks_1(bottom_out), 
 		.out_0(clb_in_1), 
@@ -85,6 +85,7 @@ module tile(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_
 
 	clb #(CHANNEL_ONEWAY_WIDTH, CLB_BLE_NUM, CONN_SEL_WIDTH) inst_clb(
 		.clk(clk), 
+		.scan_clk(scan_clk), 
 		.clb_in({clb_in_3, clb_in_2, clb_in_1, clb_in_0}), 
 		.out(clb_out), 
 		.scan_in(clb_scan_in), 

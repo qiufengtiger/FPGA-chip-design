@@ -11,7 +11,7 @@ import os
 
 @cocotb.test()
 async def test_tile(dut):
-	clock = Clock(dut.clk, 10000, units="ps")
+	clock = Clock(dut.scan_clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
 	# read param
@@ -37,7 +37,7 @@ async def test_tile(dut):
 	dut.clb_scan_en <= 1
 	for i in range(clb_scan_size):
 		dut.clb_scan_in <= clb_bitstream.pop(-1)
-		await RisingEdge(dut.clk)
+		await RisingEdge(dut.scan_clk)
 	dut.clb_scan_en <= 0
 
 	# generate and scan in conn config
@@ -68,7 +68,7 @@ async def test_tile(dut):
 	dut.conn_scan_en <= 1
 	for i in range(conn_scan_size):
 		dut.conn_scan_in <= conn_bitstream.pop(-1)
-		await RisingEdge(dut.clk)
+		await RisingEdge(dut.scan_clk)
 	dut.conn_scan_en <= 0
 
 	# random input generation

@@ -1,3 +1,7 @@
+//
+// deprecated
+//
+
 module switch_block_corner(clk, left_in, right_in, top_in, left_out, right_out, top_out);
 	parameter CHANNEL_ONEWAY_WIDTH = 4;
 

@@ -13,7 +13,7 @@ SCAN_CHAIN = 1
 async def test_ble(dut):
 	width = dut.WIDTH.value
 	dut._log.info("Found %d bits LUT" % (width))
-	clock = Clock(dut.clk, 10000, units="ps")
+	clock = Clock(dut.scan_clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
 	test_size = 2 ** width
@@ -35,7 +35,7 @@ async def test_ble(dut):
 			dut.lut_in <= test_addrs[i]
 			dut.set_in <= test_values[i]
 			dut.set <= 1
-			await RisingEdge(dut.clk)
+			await RisingEdge(dut.scan_clk)
 			dut.set <= 0
 
 	elif test_mode is SCAN_CHAIN:
@@ -45,7 +45,7 @@ async def test_ble(dut):
 			# push the last value into the scan chain
 			dut.scan_in <= test_valuesCopy.pop(-1)
 			dut.scan_en <= 1
-			await RisingEdge(dut.clk)
+			await RisingEdge(dut.scan_clk)
 			dut.scan_en <= 0
 
 	await Timer(100000, units='ps')
