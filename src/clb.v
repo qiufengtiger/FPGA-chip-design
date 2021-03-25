@@ -1,8 +1,8 @@
 // https://ieeexplore.ieee.org/document/500200
 
 `include "sram.v"
-`include "basic-gates.v"
-`include "shift_reg.v"
+// `include "basic-gates.v"
+// `include "shift_reg.v"
 
 module clb(clk, clb_in, out, scan_in, scan_out, scan_en);
 	parameter CLB_IN_WIDTH = 4;
@@ -24,7 +24,8 @@ module clb(clk, clb_in, out, scan_in, scan_out, scan_en);
 	wire is_comb;
 
 	shift_reg_1bit inst_is_comb_sftreg(.clk(clk), .out(is_comb), .scan_in(scan_in), .scan_out(scan_conn_0), .scan_en(scan_en));
-	clb_complete_conn #((CLB_IN_WIDTH + CLB_BLE_NUM), CLB_IN_WIDTH, CONN_SEL_WIDTH) inst_clb_ble_conn(.clk(clk), .complete_in({out, clb_in}), .out(ble_in_conn), .scan_in(scan_conn_0), .scan_out(scan_conn_1), .scan_en(scan_en));
+	clb_complete_conn #((CLB_IN_WIDTH + CLB_BLE_NUM + 1), CLB_IN_WIDTH, CONN_SEL_WIDTH) inst_clb_ble_conn(.clk(clk), .complete_in({1'b0, out, clb_in}), .out(ble_in_conn), 
+		.scan_in(scan_conn_0), .scan_out(scan_conn_1), .scan_en(scan_en));
 	ble #(CLB_IN_WIDTH) inst_ble(.clk(clk), .is_comb(is_comb), .lut_in(ble_in_conn), .out(out), .scan_in(scan_conn_1), .scan_out(scan_out), .scan_en(scan_en));
 endmodule
 
@@ -49,7 +50,7 @@ module ble(clk, is_comb, lut_in, out, scan_in, scan_out, scan_en);
 endmodule
 
 module clb_complete_conn(clk, complete_in, out, scan_in, scan_out, scan_en);
-	parameter IN_WIDTH = 5;
+	parameter IN_WIDTH = 6;
 	parameter OUT_WIDTH = 4;
 	parameter MUX_SEL_WIDTH = 3;
 

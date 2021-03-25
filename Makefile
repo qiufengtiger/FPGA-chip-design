@@ -11,8 +11,8 @@ TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = switch_block
-TOPLEVEL = switch_block
+FILENAME = tile
+TOPLEVEL = tile
 IS_MAPPED = 0
 
 ifeq ($(IS_MAPPED), 0)
@@ -35,7 +35,7 @@ export DATA_WIDTH = 1
 export WIDTH = 4
 
 # complete_conn
-export IN_WIDTH = 5
+export IN_WIDTH = 6
 export OUT_WIDTH = 4
 export MUX_SEL_WIDTH = 3
 
@@ -46,6 +46,8 @@ export CONN_SEL_WIDTH = 3
 
 # switch_block & connection_block
 export CHANNEL_ONEWAY_WIDTH = 4
+
+# tile parameters are included above
 
 MODULE := $(TOPLEVEL)_test
 COCOTB_HDL_TIMEUNIT=1us
@@ -67,6 +69,8 @@ else ifeq ($(TOPLEVEL),switch_block)
 	COMPILE_ARGS += -Pswitch_block.CHANNEL_ONEWAY_WIDTH=$(CHANNEL_ONEWAY_WIDTH)
 else ifeq ($(TOPLEVEL),connection_block)
 	COMPILE_ARGS += -Pconnection_block.CHANNEL_ONEWAY_WIDTH=$(CHANNEL_ONEWAY_WIDTH)
+else ifeq ($(TOPLEVEL),connection_block)
+	COMPILE_ARGS += -Ptile.CHANNEL_ONEWAY_WIDTH=$(CHANNEL_ONEWAY_WIDTH) -Ptile.CLB_BLE_NUM=$(CLB_BLE_NUM) -Ptile.CONN_SEL_WIDTH=$(CONN_SEL_WIDTH)
 endif
 
 # COMPILE_ARGS += -gspecify

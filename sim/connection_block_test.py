@@ -50,8 +50,8 @@ async def test_cb(dut):
 	tracks_0 = BinaryValue(tracks_0, n_bits=4, bigEndian=False)
 	tracks_1 = BinaryValue(tracks_1, n_bits=4, bigEndian=False)
 
-	golden_out_0 = {3: tracks_0[0], 2: tracks_1[0], 1: tracks_0[2], 0: tracks_1[2]}
-	golden_out_1 = {3: tracks_0[1], 2: tracks_1[1], 1: tracks_0[3], 0: tracks_1[3]}
+	golden_out_0 = {0: tracks_0[0], 1: tracks_1[0], 2: tracks_0[2], 3: tracks_1[2]}
+	golden_out_1 = {0: tracks_0[1], 1: tracks_1[1], 2: tracks_0[3], 3: tracks_1[3]}
 
 	assert out_0 == golden_out_0[out_config[0]], "out_0 expecting %d, getting %d" % (golden_out_0[out_config[0]], out_0)
 	assert out_1 == golden_out_1[out_config[1]], "out_1 expecting %d, getting %d" % (golden_out_1[out_config[1]], out_1)

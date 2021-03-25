@@ -1,5 +1,5 @@
-`include "basic-gates.v"
-`include "shift_reg.v"
+// `include "basic-gates.v"
+// `include "shift_reg.v"
 
 module connection_block(clk, tracks_0, tracks_1, out_0, out_1, scan_in, scan_out, scan_en);
 	parameter CHANNEL_ONEWAY_WIDTH = 4;
@@ -26,7 +26,7 @@ module connection_block(clk, tracks_0, tracks_1, out_0, out_1, scan_in, scan_out
 	// each out is controlled by 1 4:1 mux, so in total 2*2 contorl bits
 	shift_reg #(4) inst_cb_out_config(.clk(clk), .out(out_config), .scan_in(scan_in), .scan_out(scan_out), .scan_en(scan_en));
 
-	mux_1bit #(4, 2) inst_cb_out_mux_0(.in({tracks_0[0], tracks_1[0], tracks_0[2], tracks_1[2]}), .select(out_config[1:0]), .out(out_0));
-	mux_1bit #(4, 2) inst_cb_out_mux_1(.in({tracks_0[1], tracks_1[1], tracks_0[3], tracks_1[3]}), .select(out_config[3:2]), .out(out_1));
+	mux_1bit #(4, 2) inst_cb_out_mux_0(.in({tracks_1[2], tracks_0[2], tracks_1[0], tracks_0[0]}), .select(out_config[1:0]), .out(out_0));
+	mux_1bit #(4, 2) inst_cb_out_mux_1(.in({tracks_1[3], tracks_0[3], tracks_1[1], tracks_0[1]}), .select(out_config[3:2]), .out(out_1));
 	
 endmodule

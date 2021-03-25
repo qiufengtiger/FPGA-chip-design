@@ -23,7 +23,8 @@ async def test_clb(dut):
 	clock = Clock(dut.clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
-	test_funcs = [AND, OR, XOR, NAND, NOR, XNOR, ADD]
+	# test_funcs = [AND, OR, XOR, NAND, NOR, XNOR, ADD]
+	test_funcs = [AND]
 
 	is_comb_size = ble_num
 	complete_bit_size = sel_width * in_width
@@ -66,6 +67,15 @@ async def test_clb(dut):
 			elif test_func is ADD:
 				this_golden_out = (in_0 + in_1 + in_2 + in_3) & 1
 			test_golden_out.append(this_golden_out)
+
+		# golden_out = [0, 0, 0, 1]
+		# scan in AND bitstream
+		# input_0 = A
+		# input_1 = B
+		# dut.in_0 <= input_0
+		# ....input_1
+		# dut.out.value
+		# assert dut.out.value = golden_out[{B, A}]
 
 		# [1, 0, 1, 1] etc
 		# list(input_string)
