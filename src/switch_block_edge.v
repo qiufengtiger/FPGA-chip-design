@@ -51,10 +51,9 @@ module switch_block_edge(clk, left_in, right_in, top_in, left_out, right_out, to
 	mux_1bit #(2, 1) inst_mux_3_top(.in({left_in[2], right_in[3]}), .select(mux_ctrl_top[3]), .out(top_out[3]));
 
 	// bottom 
-    /*
-	mux_1bit #(3, 2) inst_mux_0_bottom(.in({left_in[2], right_in[1], top_in[0]}), .select(mux_ctrl_bottom[1:0]), .out(bottom_out[0]));
-	mux_1bit #(3, 2) inst_mux_1_bottom(.in({left_in[1], right_in[2], top_in[1]}), .select(mux_ctrl_bottom[3:2]), .out(bottom_out[1]));
-	mux_1bit #(3, 2) inst_mux_2_bottom(.in({left_in[0], right_in[3], top_in[2]}), .select(mux_ctrl_bottom[5:4]), .out(bottom_out[2]));
-	mux_1bit #(3, 2) inst_mux_3_bottom(.in({left_in[3], right_in[0], top_in[3]}), .select(mux_ctrl_bottom[7:6]), .out(bottom_out[3]));*/
+	// mux_1bit #(3, 2) inst_mux_0_bottom(.in({left_in[2], right_in[1], top_in[0]}), .select(mux_ctrl_bottom[1:0]), .out(bottom_out[0]));
+	// mux_1bit #(3, 2) inst_mux_1_bottom(.in({left_in[1], right_in[2], top_in[1]}), .select(mux_ctrl_bottom[3:2]), .out(bottom_out[1]));
+	// mux_1bit #(3, 2) inst_mux_2_bottom(.in({left_in[0], right_in[3], top_in[2]}), .select(mux_ctrl_bottom[5:4]), .out(bottom_out[2]));
+	// mux_1bit #(3, 2) inst_mux_3_bottom(.in({left_in[3], right_in[0], top_in[3]}), .select(mux_ctrl_bottom[7:6]), .out(bottom_out[3]));
 
 endmodule

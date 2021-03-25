@@ -11,8 +11,8 @@ TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = tile
-TOPLEVEL = tile
+FILENAME = switch_block_edge
+TOPLEVEL = switch_block_edge
 IS_MAPPED = 0
 
 ifeq ($(IS_MAPPED), 0)
@@ -67,6 +67,8 @@ else ifeq ($(TOPLEVEL),clb)
 	COMPILE_ARGS += -Pclb.CLB_IN_WIDTH=$(CLB_IN_WIDTH) -Pclb.CLB_BLE_NUM=$(CLB_BLE_NUM) -Pclb.CONN_SEL_WIDTH=$(CONN_SEL_WIDTH)
 else ifeq ($(TOPLEVEL),switch_block)
 	COMPILE_ARGS += -Pswitch_block.CHANNEL_ONEWAY_WIDTH=$(CHANNEL_ONEWAY_WIDTH)
+else ifeq ($(TOPLEVEL),switch_block_edge)
+	COMPILE_ARGS += -Pswitch_block_edge.CHANNEL_ONEWAY_WIDTH=$(CHANNEL_ONEWAY_WIDTH)
 else ifeq ($(TOPLEVEL),connection_block)
 	COMPILE_ARGS += -Pconnection_block.CHANNEL_ONEWAY_WIDTH=$(CHANNEL_ONEWAY_WIDTH)
 else ifeq ($(TOPLEVEL),connection_block)
