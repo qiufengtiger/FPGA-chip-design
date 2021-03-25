@@ -20,11 +20,11 @@ module tile(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_
 	parameter CLB_BLE_NUM = 1;
 	parameter CONN_SEL_WIDTH = 3;
 
-	inout [CHANNEL_ONEWAY_WIDTH-1:0] left_in, right_in, top_in, bottom_in;
-	inout [CHANNEL_ONEWAY_WIDTH-1:0] left_out, right_out, top_out, bottom_out;
+	input [CHANNEL_ONEWAY_WIDTH-1:0] left_in, right_in, top_in, bottom_in;
+	output [CHANNEL_ONEWAY_WIDTH-1:0] left_out, right_out, top_out, bottom_out;
 	input clk, clb_scan_in, clb_scan_en, conn_scan_in, conn_scan_en;
 	input left_clb_in, bottom_clb_in, right_sb_in;
-	inout left_clb_out;
+	output left_clb_out;
 	output clb_scan_out, conn_scan_out, top_cb_out, right_cb_out;
 
 	// a test pin, used in HDL verification
