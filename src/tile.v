@@ -6,6 +6,12 @@
 
 // refer to this slide for block diagram
 // https://docs.google.com/presentation/d/1zSjzy-MxLvTViwhgN_G6zG-wbjkTXp0XCrzEKIEBBog/edit#slide=id.gc5f0a1aeb8_1_27
+// tile structure:
+//   |     |
+// - CB  - SB -
+//   |     |
+// - CLB - CB -
+//   |     |
 module tile(clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
 	left_clb_out, left_clb_in, bottom_clb_in, right_sb_in, test_out_x4,
 	top_cb_out, right_cb_out, 
