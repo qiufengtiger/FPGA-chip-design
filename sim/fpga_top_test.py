@@ -29,20 +29,20 @@ async def test_fpga_top_2x2(dut):
 	sb_0_config_bottom = [0, 0, 0, 0]
 	sb_0_config = sb_0_config_left + sb_0_config_right + sb_0_config_top + sb_0_config_bottom
 
-	sb_1_config_left = [0, 0, 1, 0]
+	sb_1_config_left = [2, 0, 1, 0]
 	sb_1_config_right = [0, 1, 2, 0]
 	sb_1_config_top = [2, 0, 0, 2]
 	sb_1_config_bottom = [0, 0, 0, 0]
 	sb_1_config = sb_1_config_left + sb_1_config_right + sb_1_config_top + sb_1_config_bottom
 
 	sb_2_config_left = [0, 0, 0, 0]
-	sb_2_config_right = [0, 0, 0, 3]
+	sb_2_config_right = [0, 0, 1, 3]
 	sb_2_config_top = [1, 0, 0, 0]
 	sb_2_config_bottom = [0, 0, 0, 0]
 	sb_2_config = sb_2_config_left + sb_2_config_right + sb_2_config_top + sb_2_config_bottom
 
 	sb_3_config_left = [0, 0, 0, 0]
-	sb_3_config_right = [0, 0, 0, 0]
+	sb_3_config_right = [0, 0, 0, 3]
 	sb_3_config_top = [0, 0, 0, 0]
 	sb_3_config_bottom = [2, 0, 0, 0]
 	sb_3_config = sb_3_config_left + sb_3_config_right + sb_3_config_top + sb_3_config_bottom
@@ -65,7 +65,7 @@ async def test_fpga_top_2x2(dut):
 	tile_0_sb_config_right = [0, 0, 0, 0]
 	tile_0_sb_config_top = [0, 0, 0, 0]
 	tile_0_sb_config_bottom = [0, 1, 0, 0]
-	tile_0_conn_config = tile_0_sb_config_right + tile_0_sb_config_left + tile_0_sb_config_top + tile_0_sb_config_bottom
+	tile_0_conn_config = tile_0_sb_config_left + tile_0_sb_config_right + tile_0_sb_config_top + tile_0_sb_config_bottom
 	tile_0_conn_config += tile_0_cb_0_config + tile_0_cb_1_config
 
 	tile_1_cb_0_config = [0, 0]
@@ -74,7 +74,7 @@ async def test_fpga_top_2x2(dut):
 	tile_1_sb_config_right = [0, 0, 0, 0]
 	tile_1_sb_config_top = [0, 0, 0, 0]
 	tile_1_sb_config_bottom = [0, 0, 0, 0]
-	tile_1_conn_config = tile_1_sb_config_right + tile_1_sb_config_left + tile_1_sb_config_top + tile_1_sb_config_bottom
+	tile_1_conn_config = tile_1_sb_config_left + tile_1_sb_config_right + tile_1_sb_config_top + tile_1_sb_config_bottom
 	tile_1_conn_config += tile_1_cb_0_config + tile_1_cb_1_config
 
 	tile_2_cb_0_config = [0, 2]
@@ -83,16 +83,16 @@ async def test_fpga_top_2x2(dut):
 	tile_2_sb_config_right = [0, 0, 0, 0]
 	tile_2_sb_config_top = [2, 0, 0, 0]
 	tile_2_sb_config_bottom = [0, 2, 0, 0]
-	tile_2_conn_config = tile_2_sb_config_right + tile_2_sb_config_left + tile_2_sb_config_top + tile_2_sb_config_bottom
+	tile_2_conn_config = tile_2_sb_config_left + tile_2_sb_config_right + tile_2_sb_config_top + tile_2_sb_config_bottom
 	tile_2_conn_config += tile_2_cb_0_config + tile_2_cb_1_config
 
 	tile_3_cb_0_config = [0, 2]
 	tile_3_cb_1_config = [0, 0]
 	tile_3_sb_config_left = [0, 0, 0, 0]
-	tile_3_sb_config_right = [0, 0, 0, 0]
+	tile_3_sb_config_right = [0, 0, 0, 3]
 	tile_3_sb_config_top = [0, 0, 0, 0]
 	tile_3_sb_config_bottom = [0, 0, 0, 2]
-	tile_3_conn_config = tile_3_sb_config_right + tile_3_sb_config_left + tile_3_sb_config_top + tile_3_sb_config_bottom
+	tile_3_conn_config = tile_3_sb_config_left + tile_3_sb_config_right + tile_3_sb_config_top + tile_3_sb_config_bottom
 	tile_3_conn_config += tile_3_cb_0_config + tile_3_cb_1_config
 
 	conn_config = sb_0_config + cb_0_config + sb_1_config + cb_1_config + sb_2_config + cb_2_config
@@ -157,69 +157,20 @@ async def test_fpga_top_2x2(dut):
 
 	await Timer(100, units='ps')
 
+	test_in_A = random.randint(0, 1)
+	test_in_B = random.randint(0, 1)
+
 	# dut.fpga_in[0] <= 0
-	dut.fpga_in[1] <= 0 # B
-	dut.fpga_in[2] <= 1 # A
+	dut.fpga_in[1] <= test_in_B # B
+	dut.fpga_in[2] <= test_in_A # A
 	# dut.fpga_in[3] <= 0
 
 	await Timer(100, units='ps')
 
-	print(dut.fpga_out[0].value)
-	print(dut.fpga_out[1].value)
-	print(dut.test_out_0_x4.value)
-	print(dut.test_out_1_x4.value)
+	result_C = dut.fpga_out[0]
+	result_D = dut.fpga_out[3]
 
-	print(dut.test_out_0.value)
-	print(dut.test_out_1.value)
-
-	# # config if input io block is connected to sb
-	# # [io_0_0_is_connected, io_0_1_is_connected, io_1_0_is_connected, io_1_1_is_connected ...]
-	# # 1st_index: io block id
-	# # 2nd_index: 0 -> io_left, 1 -> io_right
-	# # 1 -> is connected
-	# io_input_config = {2: [1, 0], 1: [1, 0], 3: [0, 0], 0: [0, 0]}
-	# # index: io block id
-	# # 1 -> is connected
-	# io_output_config = {2: 0, 1: 0, 3: 1, 0: 1}
-	# # select which channel is to be outputted
-	# # io_output_select = [0, 1, 2, 3]
-
-	# # B
-	# # port_in_B = 
-	# route_in_B = 
-
-	# # extra sb config
-	# # [left0-4, right0-4, top0-4, bottom0-4]
-
-	# # corner direct connection
-	# # top - left
-	# sb_0_config = [1, 1, 1, 3 if io_input_config[0][1] == 1 else 1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0]
-	# # top - right
-	# sb_2_config = [0, 0, 0, 0, 1, 1, 1, 3 if io_input_config[1][0] == 1 else 1, 2 if io_input_config[2][1] == 1 else 1, 1, 1, 1, 0, 0, 0, 0]
-	# # bottom - right
-	# sb_4_config = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 if io_input_config[3][0] == 1 else 1, 1, 1, 1]
-
-	# # edge 3 way connection
-	# # top - left - right
-	# sb_1_config = []
-	# # top - bottom - right
-	# sb_3_config = []
-
-	# # extra cb config
-	# cb_config = [[, io_output_select[0]], [, io_output_select[1]], [io_output_select[2], ], [io_output_select[3], ]]
-
-	# # clb bitstream
-
-
-
-	# cb_0_config = [0, io_output_select]
-	# cb_1_config = [0, io_output_select]
-	# cb_2_config = [io_output_select, 0]
-	# cb_3_config = [io_output_select, 0]
-
-
-
-
-
+	assert result_C == test_in_A | test_in_B, "port 0 (C) mismatch"
+	assert result_D == test_in_A & test_in_B, "port 3 (D) mismatch"
 
 

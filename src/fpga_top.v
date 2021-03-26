@@ -15,7 +15,7 @@
 //			    |       |
 // 			   io5     io4
 // need extra CB & SB on the left and bottom of the FPGA, see tile.v for structure in tile
-module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en, test_out_0, test_out_1, test_out_0_x4, test_out_1_x4);
+module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en);
 	//  how many tile in a column / row
 	parameter FPGA_WIDTH = 2;
 	parameter CHANNEL_ONEWAY_WIDTH = 4;
@@ -26,9 +26,6 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 	output [3:0] fpga_out;
 	input clb_scan_in, clb_scan_en, conn_scan_in, conn_scan_en, clk, scan_clk;
 	output clb_scan_out, conn_scan_out;
-
-	output test_out_0, test_out_1;
-	output [3:0] test_out_0_x4, test_out_1_x4;
 
 	// clb_scanchain: scan_in -> tile0 -> tile1 -> tile2 -> tile3 -> scan_out
 	// conn_scanchain: scan_in -> SB0 -> CB0 -> SB1 -> CB1 -> SB2 -> CB2 -> SB3 -> CB3 -> SB4 -> tile0 -> tile1 -> tile2 -> tile3 -> scan_out
@@ -41,10 +38,10 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 	wire [CHANNEL_ONEWAY_WIDTH-1:0] tile_2_sb_0, tile_3_sb_1, tile_3_sb_3, tile_0_sb_4;
 	wire [CHANNEL_ONEWAY_WIDTH-1:0] sb_0_sb_1, sb_1_sb_2, sb_2_sb_3, sb_3_sb_4;
     wire [CHANNEL_ONEWAY_WIDTH-1:0] sb_1_sb_0, sb_2_sb_1, sb_3_sb_2, sb_4_sb_3;
-    wire [CHANNEL_ONEWAY_WIDTH-1:0] tile_0_tile_1, tile_1_tile_0, tile_1_tile_2, tile_2_tile_1, tile_2_tile_3, tile_3_tile_2, tile_3_tile_4, tile_4_tile_3, tile_0_tile_3, tile_3_tile_0;
+    wire [CHANNEL_ONEWAY_WIDTH-1:0] tile_0_tile_1, tile_1_tile_0, tile_1_tile_2, tile_2_tile_1, tile_2_tile_3, tile_3_tile_2, tile_0_tile_3, tile_3_tile_0;
     // sb_2_cb_2, sb_3_cb_2, sb_3_cb_3, sb_4_cb_3;
 //	wire [CHANNEL_ONEWAY_WIDTH-1:0] cb_0_sb_0, cb_0_sb_1, cb_1_sb_1, cb_1_sb_2, cb_2_sb_2, cb_2_sb_3, cb_3_sb_3, cb_3_sb_4;
-	wire cb_0_tile2, cb_1_tile3, cb_2_tile3, cb_3_tile0; 
+	wire cb_0_tile_2, cb_1_tile_3, cb_2_tile_3, cb_3_tile_0; 
 	wire io_0_tile_0, io_1_tile_1, io_2_tile_1, io_3_tile_2; 
     
     wire clb_out0, clb_out1, clb_out2, clb_out3;
@@ -70,7 +67,7 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.scan_clk(scan_clk), 
 		.tracks_0(sb_0_sb_1), 
 		.tracks_1(sb_1_sb_0), 
-		.out_0(cb_0_tile2), 
+		.out_0(cb_0_tile_2), 
 		.out_1(fpga_out[0]), 
 		.scan_in(conn_scan_conn_0), 
 		.scan_out(conn_scan_conn_1), 
@@ -98,7 +95,7 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.scan_clk(scan_clk), 
 		.tracks_0(sb_1_sb_2), 
 		.tracks_1(sb_2_sb_1), 
-		.out_0(cb_1_tile3), 
+		.out_0(cb_1_tile_3), 
 		.out_1(fpga_out[1]), 
 		.scan_in(conn_scan_conn_2), 
 		.scan_out(conn_scan_conn_3), 
@@ -131,7 +128,7 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.tracks_0(sb_2_sb_3), 
 		.tracks_1(sb_3_sb_2), 
 		.out_0(fpga_out[2]), 
-		.out_1(cb_2_tile3), 
+		.out_1(cb_2_tile_3), 
 		.scan_in(conn_scan_conn_4), 
 		.scan_out(conn_scan_conn_5), 
 		.scan_en(conn_scan_en)
@@ -142,18 +139,17 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
     assign dummy_leftin_sb_3[2] = fpga_in[2];
     assign dummy_leftin_sb_3[3] = fpga_in[3];
 
-    // assign test_out_0 = ;
-
+    // fix 1: top_in, bottom_in, top_out
 	switch_block #(CHANNEL_ONEWAY_WIDTH) inst_sb_3(
 		.scan_clk(scan_clk), 
 		.left_in(dummy_leftin_sb_3), 
 		.right_in(tile_3_sb_3), 
-		.top_in(tile_4_tile_3), 
-		.bottom_in(tile_2_tile_3), 
+		.top_in(sb_4_sb_3), 
+		.bottom_in(sb_2_sb_3), 
 		.left_out(), 
 		.right_out(sb_3_tile_3), 
-		.top_out(tile_3_tile_4), 
-		.bottom_out(tile_3_tile_2), 
+		.top_out(sb_3_sb_4), 
+		.bottom_out(sb_3_sb_2), 
 		.left_clb_in(), 
 		.right_clb_in(clb_out3), 
 		.scan_in(conn_scan_conn_5), 
@@ -166,7 +162,7 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.tracks_0(sb_3_sb_4), 
 		.tracks_1(sb_4_sb_3), 
 		.out_0(fpga_out[3]), 
-		.out_1(cb_3_tile0), 
+		.out_1(cb_3_tile_0), 
 		.scan_in(conn_scan_conn_6), 
 		.scan_out(conn_scan_conn_7), 
 		.scan_en(conn_scan_en)
@@ -182,7 +178,7 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.left_in(dummy_leftin_sb_4), 
 		.right_in(tile_0_sb_4), 
 		.top_in(), 
-		.bottom_in(tile_3_tile_4), 
+		.bottom_in(sb_3_sb_4), 
 		.left_out(), 
 		.right_out(sb_4_tile_0), 
 		.top_out(), 
@@ -194,8 +190,8 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.scan_en(conn_scan_en)
 	);
 
-    wire left_clb_in_tile1;
-    wire bottom_clb_in_tile0;
+    wire left_clb_in_tile_1;
+    wire bottom_clb_in_tile_0;
 
 	tile #(CHANNEL_ONEWAY_WIDTH, CLB_BLE_NUM, CONN_SEL_WIDTH) inst_tile_0(
 		.clk(clk),
@@ -209,11 +205,11 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.top_out(),
 		.bottom_out(tile_0_tile_3),
 		.left_clb_out(clb_out0),
-		.left_clb_in(cb_3_tile0),
+		.left_clb_in(cb_3_tile_0),
 		.right_sb_in(clb_out1),
-		.right_cb_out(left_clb_in_tile1),
+		.right_cb_out(left_clb_in_tile_1),
 		.top_cb_out(),
-		.bottom_clb_in(bottom_clb_in_tile0),
+		.bottom_clb_in(bottom_clb_in_tile_0),
 		.clb_scan_in(clb_scan_in), 
 		.clb_scan_out(clb_scan_conn_0), 
 		.clb_scan_en(clb_scan_en), 
@@ -223,7 +219,7 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.test_out_x4()
 	);
 
-    wire bottom_clb_in_tile1;
+    wire bottom_clb_in_tile_1;
 
 	tile #(CHANNEL_ONEWAY_WIDTH, CLB_BLE_NUM, CONN_SEL_WIDTH) inst_tile_1(
 		.clk(clk),
@@ -237,11 +233,11 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.top_out(),
 		.bottom_out(tile_1_tile_2),
 		.left_clb_out(clb_out1),
-		.left_clb_in(left_clb_in_tile1),
+		.left_clb_in(left_clb_in_tile_1),
 		.right_sb_in(),
 		.right_cb_out(),
 		.top_cb_out(),
-		.bottom_clb_in(bottom_clb_in_tile1),
+		.bottom_clb_in(bottom_clb_in_tile_1),
 		.clb_scan_in(clb_scan_conn_0), 
 		.clb_scan_out(clb_scan_conn_1), 
 		.clb_scan_en(clb_scan_en), 
@@ -250,7 +246,7 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.conn_scan_en(conn_scan_en),
 		.test_out_x4()
 	);
-    wire left_clb_in_tile2;
+    wire left_clb_in_tile_2;
 
 	tile #(CHANNEL_ONEWAY_WIDTH, CLB_BLE_NUM, CONN_SEL_WIDTH) inst_tile_2(
 		.clk(clk),
@@ -264,11 +260,11 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.top_out(tile_2_tile_1),
 		.bottom_out(tile_2_sb_0),
 		.left_clb_out(clb_out2),
-		.left_clb_in(left_clb_in_tile2),
+		.left_clb_in(left_clb_in_tile_2),
 		.right_sb_in(),
 		.right_cb_out(),
-		.top_cb_out(bottom_clb_in_tile1),
-		.bottom_clb_in(cb_0_tile2),
+		.top_cb_out(bottom_clb_in_tile_1),
+		.bottom_clb_in(cb_0_tile_2),
 		.clb_scan_in(clb_scan_conn_1), 
 		.clb_scan_out(clb_scan_conn_2), 
 		.clb_scan_en(clb_scan_en), 
@@ -290,11 +286,11 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.top_out(tile_3_tile_0),
 		.bottom_out(tile_3_sb_1),
 		.left_clb_out(clb_out3),
-		.left_clb_in(cb_2_tile3),
+		.left_clb_in(cb_2_tile_3),
 		.right_sb_in(clb_out2),
-		.right_cb_out(left_clb_in_tile2),
-		.top_cb_out(bottom_clb_in_tile0),
-		.bottom_clb_in(cb_1_tile3),
+		.right_cb_out(left_clb_in_tile_2),
+		.top_cb_out(bottom_clb_in_tile_0),
+		.bottom_clb_in(cb_1_tile_3),
 		.clb_scan_in(clb_scan_conn_2), 
 		.clb_scan_out(clb_scan_out), 
 		.clb_scan_en(clb_scan_en), 
