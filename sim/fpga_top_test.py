@@ -140,7 +140,9 @@ async def test_fpga_top_2x2(dut):
 	lut_bitstream += is_comb[3] + tile_3_complete_binary + tile_3_lut_config  
 	lut_scan_size = len(lut_bitstream)
 
+	print("lut bitstream:")
 	print(lut_bitstream)
+	print("conn bitstream:")
 	print(conn_bitstream)
 
 	dut.clb_scan_en <= 1
@@ -161,8 +163,10 @@ async def test_fpga_top_2x2(dut):
 	test_in_B = random.randint(0, 1)
 
 	# dut.fpga_in[0] <= 0
-	dut.fpga_in[1] <= test_in_B # B
-	dut.fpga_in[2] <= test_in_A # A
+	# B
+	dut.fpga_in[1] <= test_in_B
+	# A
+	dut.fpga_in[2] <= test_in_A
 	# dut.fpga_in[3] <= 0
 
 	await Timer(100, units='ps')
