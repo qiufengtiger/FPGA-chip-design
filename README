@@ -23,8 +23,8 @@ User Guide
  - The simulation works by checking the assertion between the golden result and the actual result. If no assertion error returns, and a "PASS" shows on the right under PASS/FAIL, then the simulation completes with no assertion error.
 
 4. File tree structure
- - src/ : all Verilog source codes
- - sim/ : all Python testbenches
+ - src/ : All Verilog source codes.
+ - sim/ : All Python testbenches. All testbenches are named <target_module_name>_test.py
  - sim_result/ : copy of simulation results
 
 5. Git
