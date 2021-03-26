@@ -11,8 +11,8 @@ TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = tile
-TOPLEVEL = tile
+FILENAME = fpga_top
+TOPLEVEL = fpga_top
 IS_MAPPED = 0
 
 ifeq ($(IS_MAPPED), 0)

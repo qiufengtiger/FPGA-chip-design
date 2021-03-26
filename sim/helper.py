@@ -13,3 +13,10 @@ def int_list_to_bitstream(input_list, bit_length):
 # example: [1, 0, 1, 0] -> 5
 def bin_list_to_int_little_endian(input_list):
 	return int("".join(str(i) for i in input_list[::-1]), 2)
+
+def int_to_bin_list_little_endian(input, bit_length):
+	format_string = "{0:0%db}" % bit_length
+	binary = format_string.format(input)
+	binary = list(binary)[::-1]
+	binary = [int(item) for item in binary]
+	return binary
