@@ -1,7 +1,8 @@
 `include "tile.v"
 
 // 2 * 2 fpga
-// built for primary fpga functional test
+// built for primary fpga functional test because bitstream generator is pending
+// bitstream used in testbench is hand-translated from VTR result
 // fpga structure:
 //          clockwised order, same as CLB port ordering in VTR
 //        ------------------------------\

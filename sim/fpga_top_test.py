@@ -15,6 +15,10 @@ async def test_fpga_top_2x2(dut):
 	clock = Clock(dut.scan_clk, 10000, units="ps")
 	cocotb.fork(clock.start())
 
+	# 2 * 2 fpga
+	# built for primary fpga functional test because bitstream generator is pending complete
+	# bitstream used in this testbench is hand-translated from VTR result
+
 	# io info:
 	# io_0: C, io_1: B, io_2: A, io_3: D
 	# C = A | B, D = A & B
