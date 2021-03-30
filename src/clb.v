@@ -22,22 +22,25 @@ module clb(clk, scan_clk, clb_in, out, scan_in, scan_out, scan_en);
 	wire scan_conn_1;
 	wire [CLB_IN_WIDTH-1:0] ble_in_conn;
 	wire is_comb;
+	wire ble_ff_out;
 
 	shift_reg_1bit inst_is_comb_sftreg(.scan_clk(scan_clk), .out(is_comb), .scan_in(scan_in), .scan_out(scan_conn_0), .scan_en(scan_en));
-	clb_complete_conn #((CLB_IN_WIDTH + CLB_BLE_NUM + 1), CLB_IN_WIDTH, CONN_SEL_WIDTH) inst_clb_ble_conn(.scan_clk(scan_clk), .complete_in({1'b0, out, clb_in}), .out(ble_in_conn), 
+	clb_complete_conn #((CLB_IN_WIDTH + CLB_BLE_NUM + 1), CLB_IN_WIDTH, CONN_SEL_WIDTH) inst_clb_ble_conn(.scan_clk(scan_clk), .complete_in({1'b0, ble_ff_out, clb_in}), .out(ble_in_conn), 
 		.scan_in(scan_conn_0), .scan_out(scan_conn_1), .scan_en(scan_en));
-	ble #(CLB_IN_WIDTH) inst_ble(.clk(clk), .scan_clk(scan_clk), .is_comb(is_comb), .lut_in(ble_in_conn), .out(out), .scan_in(scan_conn_1), .scan_out(scan_out), .scan_en(scan_en));
+	ble #(CLB_IN_WIDTH) inst_ble(.clk(clk), .scan_clk(scan_clk), .is_comb(is_comb), .lut_in(ble_in_conn), .out(out), .ff_out(ble_ff_out), .scan_in(scan_conn_1), .scan_out(scan_out), .scan_en(scan_en));
 endmodule
 
-module ble(clk, scan_clk, is_comb, lut_in, out, scan_in, scan_out, scan_en);
+module ble(clk, scan_clk, is_comb, lut_in, ff_out, out, scan_in, scan_out, scan_en);
 	parameter WIDTH = 4;
 
 	input clk, scan_clk, is_comb, scan_in, scan_en;
 	input [WIDTH-1:0] lut_in;
-	output out, scan_out;
+	output out, scan_out, ff_out;
 
 	wire lut_table_out;
 	reg lut_ff;
+
+	assign ff_out = lut_ff;
 
 	// sram serves as the lut
 	sram #(WIDTH) inst_lut_data(.scan_clk(scan_clk), .raddr(lut_in), .rdata(lut_table_out), .waddr(lut_in), .wdata(set_in), .we(1'b0), .scan_in(scan_in), .scan_out(scan_out), .scan_en(scan_en)); 
