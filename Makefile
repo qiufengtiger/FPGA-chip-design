@@ -6,13 +6,14 @@ $(shell rm -f results.xml)
 CWD=$(shell pwd)
 SRC_DIR = $(CWD)/src
 MAPPED_SRC_DIR = $(CWD)/syn_mapped
+export BITSTREAM_DIR = $(CWD)/sim/bitstream
 
 TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = fpga_top
-TOPLEVEL = fpga_top
+FILENAME = fpga_core
+TOPLEVEL = fpga_core
 IS_MAPPED = 0
 
 ifeq ($(IS_MAPPED), 0)
@@ -71,7 +72,7 @@ else ifeq ($(TOPLEVEL),switch_block_edge)
 	COMPILE_ARGS += -Pswitch_block_edge.CHANNEL_ONEWAY_WIDTH=$(CHANNEL_ONEWAY_WIDTH)
 else ifeq ($(TOPLEVEL),connection_block)
 	COMPILE_ARGS += -Pconnection_block.CHANNEL_ONEWAY_WIDTH=$(CHANNEL_ONEWAY_WIDTH)
-else ifeq ($(TOPLEVEL),connection_block)
+else ifeq ($(TOPLEVEL),tile)
 	COMPILE_ARGS += -Ptile.CHANNEL_ONEWAY_WIDTH=$(CHANNEL_ONEWAY_WIDTH) -Ptile.CLB_BLE_NUM=$(CLB_BLE_NUM) -Ptile.CONN_SEL_WIDTH=$(CONN_SEL_WIDTH)
 endif
 
