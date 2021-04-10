@@ -12,7 +12,7 @@
 //   |     |
 // - CLB - CB1 -
 //   |     |
-module tile(clk, scan_clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
+module tile(clk, scan_clk, left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, reset,
 	left_clb_out, left_clb_in, bottom_clb_in, right_sb_in, test_out_x4,
 	top_cb_out, right_cb_out, 
 	clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en);
@@ -22,7 +22,7 @@ module tile(clk, scan_clk, left_in, right_in, top_in, bottom_in, left_out, right
 
 	input [CHANNEL_ONEWAY_WIDTH-1:0] left_in, right_in, top_in, bottom_in;
 	output [CHANNEL_ONEWAY_WIDTH-1:0] left_out, right_out, top_out, bottom_out;
-	input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in, conn_scan_en;
+	input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in, conn_scan_en, reset;
 	input left_clb_in, bottom_clb_in, right_sb_in;
 	output left_clb_out;
 	output clb_scan_out, conn_scan_out, top_cb_out, right_cb_out;
@@ -90,7 +90,8 @@ module tile(clk, scan_clk, left_in, right_in, top_in, bottom_in, left_out, right
 		.out(clb_out), 
 		.scan_in(clb_scan_in), 
 		.scan_out(clb_scan_out), 
-		.scan_en(clb_scan_en)
+		.scan_en(clb_scan_en),
+		.*
 	);
 
 endmodule

@@ -6,13 +6,13 @@
 */
 `include "tile_8x1.v"
 module tile_8x8 (
-    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en,
+    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en, reset,
     left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
 	left_clb_out, left_clb_in, bottom_clb_in, right_sb_in, 
 	top_cb_out, right_cb_out
 );
     //clk + scan chain
-    input clk, scan_clk, clb_scan_in,clb_scan_en, conn_scan_in, conn_scan_en;
+    input clk, scan_clk, clb_scan_in,clb_scan_en, conn_scan_in, conn_scan_en, reset;
     output clb_scan_out, conn_scan_out;
     
     //scaling singals for vertical expansion, non-scaling for horizontal 
@@ -83,13 +83,13 @@ module tile_8x8 (
 endmodule
 
 module tile_8x4 (
-    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en,
+    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en, reset,
     left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
 	left_clb_out, left_clb_in, bottom_clb_in, right_sb_in, 
 	top_cb_out, right_cb_out
 );
     //clk + scan chain
-    input clk, scan_clk, clb_scan_in,clb_scan_en, conn_scan_in, conn_scan_en;
+    input clk, scan_clk, clb_scan_in,clb_scan_en, conn_scan_in, conn_scan_en, reset;
     output clb_scan_out, conn_scan_out;
     //scaling singals for vertical expansion, non-scaling for horizontal 
     input [31:0] left_in, right_in;
@@ -160,13 +160,13 @@ endmodule
 
 
 module tile_8x2 (
-    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en,
+    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en, reset,
     left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
 	left_clb_out, left_clb_in, bottom_clb_in, right_sb_in, 
 	top_cb_out, right_cb_out
 );
     //clk + scan chain
-    input clk, scan_clk, clb_scan_in,clb_scan_en, conn_scan_in, conn_scan_en;
+    input clk, scan_clk, clb_scan_in,clb_scan_en, conn_scan_in, conn_scan_en, reset;
     output clb_scan_out, conn_scan_out;
     
     //scaling singals for vertical expansion, non-scaling for horizontal 

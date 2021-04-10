@@ -1,6 +1,6 @@
 module fpga_edge(right_in, right_out, top_in, top_out, 
     right_sb_in, right_clb_in, top_clb_in,
-    scan_clk, conn_scan_en, conn_scan_in, conn_scan_out, fpga_in, fpga_out
+    scan_clk, conn_scan_en, conn_scan_in, conn_scan_out, fpga_in, fpga_out, right_dummy_in
 );
 	parameter CHANNEL_ONEWAY_WIDTH = 4;
 
@@ -12,6 +12,8 @@ module fpga_edge(right_in, right_out, top_in, top_out,
     output [7:0] right_clb_in, top_clb_in;
 	input [9:0] fpga_in;
 	output [9:0] fpga_out;
+	input[3:0] right_dummy_in;
+	
     wire conn_scan_conn_0, conn_scan_conn_1, conn_scan_conn_2, conn_scan_conn_3, conn_scan_conn_4, conn_scan_conn_5, conn_scan_conn_6;
 	wire conn_scan_conn_7, conn_scan_conn_8, conn_scan_conn_9, conn_scan_conn_10, conn_scan_conn_11, conn_scan_conn_12, conn_scan_conn_13,
 		conn_scan_conn_14, conn_scan_conn_15, conn_scan_conn_16, conn_scan_conn_17, conn_scan_conn_18, conn_scan_conn_19, conn_scan_conn_20,
@@ -23,12 +25,12 @@ module fpga_edge(right_in, right_out, top_in, top_out,
 									sb_4_sb_5, sb_5_sb_4, sb_5_sb_6, sb_6_sb_5, sb_6_sb_7, sb_7_sb_6, sb_7_sb_8, sb_8_sb_7, sb_8_sb_9, sb_9_sb_8, 
 									sb_9_sb_10, sb_10_sb_9, sb_10_sb_11, sb_11_sb_10, sb_11_sb_12, sb_12_sb_11, sb_12_sb_13, sb_13_sb_12, sb_13_sb_14,
 									sb_14_sb_13, sb_14_sb_15, sb_15_sb_14, sb_15_sb_16, sb_16_sb_15;
-
+    
     wire [3:0] dummy_leftin_sb_0;
     assign dummy_leftin_sb_0[1:0] = 3'b00;
     assign dummy_leftin_sb_0[2] = fpga_in[0];
     assign dummy_leftin_sb_0[3] = 1'b0;
-
+	
 	//Top left corner
     switch_block #(CHANNEL_ONEWAY_WIDTH) inst_sb_0(
 		.scan_clk(scan_clk), 
@@ -523,7 +525,7 @@ module fpga_edge(right_in, right_out, top_in, top_out,
 	switch_block #(CHANNEL_ONEWAY_WIDTH) inst_sb_16(
 		.scan_clk(scan_clk), 
 		.left_in(sb_15_sb_16), 
-		.right_in(), 
+		.right_in(right_dummy_in), 
 		.top_in(top_in[31:28]), 
 		.bottom_in(), 
 		.left_out(sb_16_sb_15), 

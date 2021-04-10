@@ -1,12 +1,12 @@
 `include "tile.v"
 
 module tile_8x1 (
-    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en,
+    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en, reset,
     left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
 	left_clb_out, left_clb_in, bottom_clb_in, right_sb_in, 
 	top_cb_out, right_cb_out
 );
-    input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in,  conn_scan_en;
+    input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in,  conn_scan_en, reset;
     output clb_scan_out, conn_scan_out; 
     input [3:0] top_in, bottom_in;
     output [3:0] top_out, bottom_out;
@@ -75,12 +75,12 @@ module tile_8x1 (
 endmodule
 
 module tile_4x1 (
-    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en,
+    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en, reset,
     left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
 	left_clb_out, left_clb_in, bottom_clb_in, right_sb_in, 
 	top_cb_out, right_cb_out
 );
-    input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in,  conn_scan_en;
+    input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in,  conn_scan_en, reset;
     output clb_scan_out, conn_scan_out; 
     input [3:0] top_in, bottom_in;
     output [3:0] top_out, bottom_out;
@@ -150,12 +150,12 @@ endmodule
 
     
 module tile_2x1 (
-    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en,
+    clk, scan_clk, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en, reset,
     left_in, right_in, top_in, bottom_in, left_out, right_out, top_out, bottom_out, 
 	left_clb_out, left_clb_in, bottom_clb_in, right_sb_in, 
 	top_cb_out, right_cb_out
 );
-    input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in,  conn_scan_en;
+    input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in,  conn_scan_en, reset;
     output clb_scan_out, conn_scan_out; 
     input [3:0] top_in, bottom_in;
     output [3:0] top_out, bottom_out;

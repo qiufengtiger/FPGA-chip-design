@@ -6,7 +6,11 @@ $(shell rm -f results.xml)
 CWD=$(shell pwd)
 SRC_DIR = $(CWD)/src
 MAPPED_SRC_DIR = $(CWD)/syn_mapped
-export BITSTREAM_DIR = $(CWD)/sim/bitstream
+# setup bitstream
+TEST_NAME = blink
+BITSTREAM_DIR = $(CWD)/bitstream
+export BITSTREAM_ROUTE_PATH = $(BITSTREAM_DIR)/$(TEST_NAME)_route.bitstream
+export BITSTREAM_CLB_PATH = $(BITSTREAM_DIR)/$(TEST_NAME)_clb.bitstream
 
 TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
@@ -49,8 +53,12 @@ export CONN_SEL_WIDTH = 3
 export CHANNEL_ONEWAY_WIDTH = 4
 
 # tile parameters are included above
-
-MODULE := $(TOPLEVEL)_test
+BITSTREAM_TEST = 1
+ifeq ($(BITSTREAM_TEST), 0)
+	MODULE := $(TOPLEVEL)_test
+else ifeq ($(BITSTREAM_TEST), 1)
+	MODULE := $(TOPLEVEL)_$(TEST_NAME)_test
+endif
 COCOTB_HDL_TIMEUNIT=1us
 COCOTB_HDL_TIMEPRECISION=1us
 
