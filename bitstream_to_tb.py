@@ -6,9 +6,9 @@ import helper
 # default configs
 bitstream_directory = './bitstream/'
 default_module = 'blink'
-clb_bitstream_file = default_module + '_clb.bitstream'
+clb_bitstream_file = default_module + '.clb.bitstream'
 clb_bitstream = []
-route_bitstream_file = default_module + '_blink.bitstream'
+route_bitstream_file = default_module + '.blink.bitstream'
 route_bitstream = []
 
 # verification
@@ -21,6 +21,13 @@ tb_file_name = 'tb.v'
 tb_file_dir = ''
 tb_head = ''
 tb_body = ''
+tb_tail = ''
+tb_test_inspect_time = 200
+
+# tb input config
+tb_conf_file_name = ''
+tb_conf_file_dir = ''
+tb_conf = []
 
 def format_tb_head():
 	global tb_head
@@ -48,10 +55,24 @@ def format_tb_body():
 	global tb_body
 	body_front = '\t\t#10 '
 	tb_body = body_front + 'clb_scan_en <= 1; clb_scan_in <= 1\'b' + clb_bitstream[0] + ';\n'
-	
 	for clb_bit in clb_bitstream[1:]:
 		tb_body += body_front + 'clb_scan_in <= 1\'b' + clb_bit + ';\n'
 	tb_body += body_front + 'clb_scan_en <= 0\n'
+	tb_body += body_front + 'conn_scan_en <= 1; conn_scan_in <= 1\'b' + route_bitstream[0] + ';\n'
+	for route_bit in route_bitstream[1:]:
+		tb_body += body_front + 'conn_scan_in <= 1\'b' + route_bit + ';\n'
+	tb_body += body_front + 'conn_scan_en <= 0\n'
+
+def format_tb_tail():
+	global tb_tail
+	total_length = (len(clb_bitstream) + len(route_bitstream)) * 10 + tb_test_inspect_time
+	tb_tail = '\t\t#10 '
+	for conf_line in tb_conf:
+		tb_tail += conf_line + ' '
+	tb_tail += '\n'
+	tb_tail += '\t\t#' + str(total_length) + ' $finish;\n'
+	tb_tail += '\t end\n'
+	tb_tail += 'endmodule'
 
 def write_tb():
 	global tb_file_dir
@@ -59,6 +80,7 @@ def write_tb():
 	with open(tb_file_dir, 'w') as tb_file:
 		tb_file.write(tb_head)
 		tb_file.write(tb_body)
+		tb_file.write(tb_tail)
 
 def read_clb_bitstream():
 	global clb_bitstream
@@ -73,10 +95,17 @@ def read_route_bitstream():
 		lines = route_file.readlines()
 		for line in lines:
 			route_bitstream += helper.int_list_to_bitstream([int(line)], 2)
+	route_bitstream = [str(x) for x in route_bitstream]
+
+def read_conf():
+	global tb_conf, tb_conf_file_dir
+	tb_conf_file_dir = bitstream_directory + tb_conf_file_name
+	with open(tb_conf_file_dir, 'r') as conf_file:
+		tb_conf = conf_file.readlines()
 
 if __name__=="__main__":
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], 'c:r:o:', ['clb=', 'route=', 'output='])
+		opts, args = getopt.getopt(sys.argv[1:], 'c:r:o:i:', ['clb=', 'route=', 'output=', 'input='])
 	except getopt.GetoptError:
 		print('bitstream_to_tb.py -c <clb.bitstream> -r <route.bitstream>')
 		sys.exit(2)
@@ -87,6 +116,8 @@ if __name__=="__main__":
 			route_bitstream_file = arg
 		elif opt in ['-o', '--output']:
 			tb_file_name = arg
+		elif opt in ['-i', '--input']:
+			tb_conf_file_name = arg
 		else:
 			print('unknown arg: %s' % (opt))
 			sys.exit(2)
@@ -103,6 +134,12 @@ if __name__=="__main__":
 
 	format_tb_body()
 	print('format tb body complete')
+
+	read_conf()
+	print('tb input conf read: %s' % (tb_conf_file_dir))
+
+	format_tb_tail()
+	print('format tb tail complete')
 
 	write_tb()
 	print('tb written to %s' % (tb_file_dir))
