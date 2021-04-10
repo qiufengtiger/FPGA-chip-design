@@ -12,3 +12,4 @@ git add syn_mapped/*.v
 git add README
 git add bitstream_to_tb.py
 git add bitstream/*.bitstream
+git add sim_verilog/*.v

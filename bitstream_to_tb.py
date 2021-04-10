@@ -16,7 +16,7 @@ clb_bitstream_length = 1856
 route_bitstream_length = 3168
 
 # result tb config
-tb_directory = './'
+tb_directory = './sim_verilog/'
 tb_file_name = 'tb.v'
 tb_file_dir = ''
 tb_head = ''
