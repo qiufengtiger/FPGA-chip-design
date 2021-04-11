@@ -103,11 +103,18 @@ def read_conf():
 	with open(tb_conf_file_dir, 'r') as conf_file:
 		tb_conf = conf_file.readlines()
 
+# format:
+# python bitstream_to_tb.py -c <clb.bitstream> -r <route.bitstream> -o <output.v> -i <input.conf>
+# see the top configs for the search directory
+# clb.bitstream: clb bitstream, follows Tong's script format
+# route.bitstream: SB and CB bitstream, follows Tong's script format
+# output: name of target output verilog tb
+# input.conf: contains all the input to module after bitstream scan in is complete, in verilog format
 if __name__=="__main__":
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], 'c:r:o:i:', ['clb=', 'route=', 'output=', 'input='])
 	except getopt.GetoptError:
-		print('bitstream_to_tb.py -c <clb.bitstream> -r <route.bitstream>')
+		print('bitstream_to_tb.py -c <clb.bitstream> -r <route.bitstream> -o <output.v> -i <input.conf>')
 		sys.exit(2)
 	for opt, arg in opts:
 		if opt in ['-c', '--clb']:
