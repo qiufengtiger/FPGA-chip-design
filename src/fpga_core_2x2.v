@@ -16,7 +16,7 @@
 //			    |       |
 // 			   io5     io4
 // need extra CB & SB on the left and bottom of the FPGA, see tile.v for structure in tile
-module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en);
+module fpga_core_2x2(clk, reset, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en);
 	//  how many tile in a column / row
 	parameter FPGA_WIDTH = 2;
 	parameter CHANNEL_ONEWAY_WIDTH = 4;
@@ -25,7 +25,7 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 
 	input [3:0] fpga_in;
 	output [3:0] fpga_out;
-	input clb_scan_in, clb_scan_en, conn_scan_in, conn_scan_en, clk, scan_clk;
+	input clb_scan_in, clb_scan_en, conn_scan_in, conn_scan_en, clk, scan_clk, reset;
 	output clb_scan_out, conn_scan_out;
 
 	// clb_scanchain: scan_in -> tile0 -> tile1 -> tile2 -> tile3 -> scan_out
@@ -216,7 +216,8 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.conn_scan_in(conn_scan_conn_8), 
 		.conn_scan_out(conn_scan_conn_9), 
 		.conn_scan_en(conn_scan_en),
-		.test_out_x4()
+		.test_out_x4(),
+		.reset(reset)
 	);
 
     wire bottom_clb_in_tile_1;
@@ -244,7 +245,8 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.conn_scan_in(conn_scan_conn_9), 
 		.conn_scan_out(conn_scan_conn_10), 
 		.conn_scan_en(conn_scan_en),
-		.test_out_x4()
+		.test_out_x4(),
+		.reset(reset)
 	);
     wire left_clb_in_tile_2;
 
@@ -271,7 +273,8 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.conn_scan_in(conn_scan_conn_10), 
 		.conn_scan_out(conn_scan_conn_11), 
 		.conn_scan_en(conn_scan_en),
-		.test_out_x4()
+		.test_out_x4(),
+		.reset(reset)
 	);
 
 	tile #(CHANNEL_ONEWAY_WIDTH, CLB_BLE_NUM, CONN_SEL_WIDTH) inst_tile_3(
@@ -297,7 +300,8 @@ module fpga_top(clk, scan_clk, fpga_in, fpga_out, clb_scan_in, clb_scan_out, clb
 		.conn_scan_in(conn_scan_conn_11), 
 		.conn_scan_out(conn_scan_out), 
 		.conn_scan_en(conn_scan_en),
-		.test_out_x4()
+		.test_out_x4(),
+		.reset(reset)
 	);
 
 endmodule

@@ -16,8 +16,8 @@ TOPLEVEL_LANG ?=verilog
 SIM ?= icarus
 
 # be sure to modify this when testing different module
-FILENAME = fpga_core
-TOPLEVEL = fpga_core
+FILENAME = fpga_core_2x2
+TOPLEVEL = fpga_core_2x2
 IS_MAPPED = 0
 
 ifeq ($(IS_MAPPED), 0)
@@ -53,7 +53,7 @@ export CONN_SEL_WIDTH = 3
 export CHANNEL_ONEWAY_WIDTH = 4
 
 # tile parameters are included above
-BITSTREAM_TEST = 1
+BITSTREAM_TEST = 0
 ifeq ($(BITSTREAM_TEST), 0)
 	MODULE := $(TOPLEVEL)_test
 else ifeq ($(BITSTREAM_TEST), 1)
