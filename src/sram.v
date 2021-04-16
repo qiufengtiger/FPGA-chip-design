@@ -1,11 +1,10 @@
-`timescale 1ns/1ps
-module sram(scan_clk, raddr, rdata, waddr, wdata, we, scan_in, scan_out, scan_en);
+module sram(scan_clk, raddr, rdata, scan_in, scan_out, scan_en);
 	parameter ADDR_WIDTH = 4;
 	// parameter DATA_WIDTH = 1;
 	
-	input scan_clk, we, scan_en;
-	input [ADDR_WIDTH-1:0] raddr, waddr;
-	input wdata, scan_in;
+	input scan_clk, scan_en;
+	input [ADDR_WIDTH-1:0] raddr;
+	input scan_in;
 	output rdata, scan_out;
 	// input [DATA_WIDTH-1:0] wdata, scan_in;
 	// output [DATA_WIDTH-1:0] rdata, scan_out;
@@ -18,14 +17,15 @@ module sram(scan_clk, raddr, rdata, waddr, wdata, we, scan_in, scan_out, scan_en
 
 
 	always @ (posedge scan_clk) begin
-		if(we) begin
-			sram_data[waddr] <= wdata;
-		end
-		else if(scan_en) begin
-			// scan_out_value <= sram_data[(2**ADDR_WIDTH)-1];
+		if(scan_en) begin
 			sram_data <= {sram_data[(2**ADDR_WIDTH)-2:0], scan_in};
 		end 
 	end
 	assign scan_out = sram_data[(2**ADDR_WIDTH)-1];
-	assign rdata = sram_data[raddr];
+	// assign rdata = sram_data[raddr];
+
+	wire is_msb = (raddr == 2**ADDR_WIDTH-1);
+
+	mux2 inst_rdata_mux(.in1(scan_out), .in0(sram_data[raddr]), .select(is_msb), .out(rdata));
+
 endmodule 

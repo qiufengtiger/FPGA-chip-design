@@ -36,8 +36,11 @@ module ble(clk, scan_clk, is_comb, lut_in, out, scan_in, scan_out, scan_en, rese
 	reg lut_ff;
 
 	// sram serves as the lut
-	sram #(WIDTH) inst_lut_data(.scan_clk(scan_clk), .raddr(lut_in), .rdata(lut_table_out), .waddr(lut_in), .wdata(set_in), .we(1'b0), .scan_in(scan_in), .scan_out(scan_out), .scan_en(scan_en)); 
+	// in fact the same as shift reg
+	sram #(WIDTH) inst_lut_data(.scan_clk(scan_clk), .raddr(lut_in), .rdata(lut_table_out), .scan_in(scan_in), .scan_en(scan_en), .scan_out(scan_out)); 
 	mux2 #(1) inst_lut_mux(.in1(lut_table_out), .in0(lut_ff), .select(is_comb), .out(out));
+
+	// assign scan_out = lut_table_out[2**WIDTH-1];
 
 	always @ (posedge clk) begin
 		if(reset) 

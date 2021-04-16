@@ -16,7 +16,9 @@ module shift_reg(scan_clk, out, scan_in, scan_out, scan_en);
 	end
 	// assign scan_out = scan_out_value;
 	assign scan_out = reg_data[SIZE-1];
-	assign out = reg_data;
+	// assign out = reg_data;
+	assign out = {scan_out, reg_data[SIZE-2:0]};
+
 endmodule
 
 module shift_reg_1bit(scan_clk, out, scan_in, scan_out, scan_en);
