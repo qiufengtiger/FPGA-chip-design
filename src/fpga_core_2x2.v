@@ -1,4 +1,10 @@
 `include "tile.v"
+`include "clb.v"
+`include "switch_block.v"
+`include "connection_block.v"
+`include "basic-gates.v"
+`include "shift_reg.v"
+`include "sram.v"
 
 // 2 * 2 fpga
 // built for primary fpga functional test because bitstream generator is pending

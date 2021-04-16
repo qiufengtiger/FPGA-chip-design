@@ -1,9 +1,3 @@
-`include "clb.v"
-`include "switch_block.v"
-`include "connection_block.v"
-`include "basic-gates.v"
-`include "shift_reg.v"
-
 // refer to this slide for block diagram
 // https://docs.google.com/presentation/d/1zSjzy-MxLvTViwhgN_G6zG-wbjkTXp0XCrzEKIEBBog/edit#slide=id.gc5f0a1aeb8_1_27
 // tile structure:

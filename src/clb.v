@@ -1,9 +1,5 @@
 // https://ieeexplore.ieee.org/document/500200
 
-`include "sram.v"
-// `include "basic-gates.v"
-// `include "shift_reg.v"
-
 module clb(clk, scan_clk, clb_in, out, scan_in, scan_out, scan_en, reset);
 	parameter CLB_IN_WIDTH = 4;
 	parameter CLB_BLE_NUM = 1;
