@@ -14,6 +14,10 @@ module fpga_core(clk, scan_clk, fpga_in, fpga_out,
 
     wire conn_scan_conn;
 
+    wire[3:0] right_dummy;
+    wire[31:0] top_in, right_in;
+    wire[7:0] top_cb_out, right_cb_out;
+
     // fpga_in and fpga_out are mapped inversely to follow the pin order
     fpga_edge inst_edge(
         .right_in(array_left_edge_right), 
@@ -32,12 +36,12 @@ module fpga_core(clk, scan_clk, fpga_in, fpga_out,
         .right_dummy_in(right_dummy)
     );
     
-    wire[7:0] top_cb_out, right_cb_out;
+    
     assign fpga_out[10] = top_cb_out[6];
     assign fpga_out[11] = top_cb_out[7];
     assign fpga_out[19:12] = right_cb_out;
     
-    wire[31:0] top_in, right_in;
+    
     assign top_in[20] = fpga_in[10];
     assign top_in[27] = fpga_in[10];
     assign top_in[24] = fpga_in[11];
@@ -59,7 +63,6 @@ module fpga_core(clk, scan_clk, fpga_in, fpga_out,
     assign right_in[30] = fpga_in[18];
     assign right_in[29] = fpga_in[19];
     
-    wire[3:0] right_dummy;
     assign right_dummy[2] = fpga_in[19];
 	
     tile_8x8 inst_tile_8x8 (
