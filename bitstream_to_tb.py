@@ -3,6 +3,8 @@ import sys
 sys.path.insert(0, './sim/')
 import helper
 
+clk_period = 20
+
 # default configs
 bitstream_directory = 'bitstream/'
 default_module = 'blink'
@@ -31,20 +33,20 @@ tb_conf = []
 
 def format_tb_head():
     clk_control = '''\talways begin
-    #5
+    #%d
 		if (start_fpga_clk)
 			clk = ~clk;
 		else
 			clk = 0;
-	end'''
+	end''' % (clk_period / 2)
 
     scan_clk_control = '''\talways begin
-    #5
+    #%d
         if (~start_fpga_clk)
             scan_clk = ~scan_clk;
         else
             scan_clk = 0;
-    end'''
+    end''' % (clk_period / 2)
 
     global tb_head
     module_name = tb_file_name.split('.')[0]
@@ -73,7 +75,7 @@ def format_tb_head():
 
 def format_tb_body():
     global tb_body
-    body_front = '\t\t#10 '
+    body_front = '\t\t#' + str(clk_period) + ' '
     tb_body = body_front + 'clb_scan_en <= 1; clb_scan_in <= 1\'b' + clb_bitstream[0] + ';\n'
     for clb_bit in clb_bitstream[1:]:
         tb_body += body_front + 'clb_scan_in <= 1\'b' + clb_bit + ';\n'
@@ -87,7 +89,7 @@ def format_tb_body():
     
 def format_tb_tail():
     global tb_tail
-    total_length = (len(clb_bitstream) + len(route_bitstream)) * 10 + tb_test_inspect_time
+    total_length = (len(clb_bitstream) + len(route_bitstream)) * clk_period + tb_test_inspect_time
     tb_tail = ''
     for conf_line in tb_conf:
         tb_tail += '\t\t'+ conf_line + ' '

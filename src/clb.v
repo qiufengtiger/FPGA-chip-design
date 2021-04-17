@@ -1,5 +1,9 @@
 // https://ieeexplore.ieee.org/document/500200
 
+//`include "sram.v"
+// `include "basic-gates.v"
+// `include "shift_reg.v"
+
 module clb(clk, scan_clk, clb_in, out, scan_in, scan_out, scan_en, reset);
 	parameter CLB_IN_WIDTH = 4;
 	parameter CLB_BLE_NUM = 1;
@@ -18,10 +22,25 @@ module clb(clk, scan_clk, clb_in, out, scan_in, scan_out, scan_en, reset);
 	wire scan_conn_1;
 	wire [CLB_IN_WIDTH-1:0] ble_in_conn;
 	wire is_comb;
+    wire [11:0] mux_config;
+    wire [5:0] complete_in = {1'b0, out, clb_in};
 
-	shift_reg_1bit inst_is_comb_sftreg(.scan_clk(scan_clk), .out(is_comb), .scan_in(scan_in), .scan_out(scan_conn_0), .scan_en(scan_en));
-	clb_complete_conn #((CLB_IN_WIDTH + CLB_BLE_NUM + 1), CLB_IN_WIDTH, CONN_SEL_WIDTH) inst_clb_ble_conn(.scan_clk(scan_clk), .complete_in({1'b0, out, clb_in}), .out(ble_in_conn), 
-		.scan_in(scan_conn_0), .scan_out(scan_conn_1), .scan_en(scan_en));
+	//shift_reg_1bit inst_is_comb_sftreg(.scan_clk(scan_clk), .out(is_comb), .scan_in(scan_in), .scan_out(scan_conn_0), .scan_en(scan_en));
+	
+	
+	
+	sram #(13) inst_lut_data(.scan_clk(scan_clk), .sram_data({mux_config, is_comb}), .scan_in(scan_in), 
+	                            .scan_out(scan_conn_1), .scan_en(scan_en)); 
+    assign ble_in_conn[0] = complete_in[mux_config[2:0]];
+    assign ble_in_conn[1] = complete_in[mux_config[5:3]];
+    assign ble_in_conn[2] = complete_in[mux_config[8:6]];
+    assign ble_in_conn[3] = complete_in[mux_config[11:9]];
+	
+	
+	//clb_complete_conn #((CLB_IN_WIDTH + CLB_BLE_NUM + 1), CLB_IN_WIDTH, CONN_SEL_WIDTH) inst_clb_ble_conn(.scan_clk(scan_clk), 
+	  //  .complete_in({1'b0, out, clb_in}), .out(ble_in_conn), 
+		//.scan_in(scan_conn_0), .scan_out(scan_conn_1), .scan_en(scan_en));
+	
 	ble #(CLB_IN_WIDTH) inst_ble(.clk(clk), .scan_clk(scan_clk), .is_comb(is_comb), .lut_in(ble_in_conn), .out(out), .scan_in(scan_conn_1), .scan_out(scan_out), .scan_en(scan_en), .*);
 endmodule
 
@@ -31,16 +50,18 @@ module ble(clk, scan_clk, is_comb, lut_in, out, scan_in, scan_out, scan_en, rese
 	input clk, scan_clk, is_comb, scan_in, scan_en, reset;
 	input [WIDTH-1:0] lut_in;
 	output out, scan_out;
-
-	wire lut_table_out;
+    
+    wire [(WIDTH**2)-1:0] sram_data;
+    
+	wire lut_table_out = sram_data[lut_in];
 	reg lut_ff;
-
+    
 	// sram serves as the lut
-	// in fact the same as shift reg
-	sram #(WIDTH) inst_lut_data(.scan_clk(scan_clk), .raddr(lut_in), .rdata(lut_table_out), .scan_in(scan_in), .scan_en(scan_en), .scan_out(scan_out)); 
+	sram #(16) inst_lut_data(.scan_clk(scan_clk), .sram_data(sram_data), .scan_in(scan_in), 
+	                            .scan_out(scan_out), .scan_en(scan_en)); 
+	
+	
 	mux2 #(1) inst_lut_mux(.in1(lut_table_out), .in0(lut_ff), .select(is_comb), .out(out));
-
-	// assign scan_out = lut_table_out[2**WIDTH-1];
 
 	always @ (posedge clk) begin
 		if(reset) 
@@ -64,8 +85,14 @@ module clb_complete_conn(scan_clk, complete_in, out, scan_in, scan_out, scan_en)
 	wire [(MUX_SEL_WIDTH * OUT_WIDTH)-1:0] mux_config;
 
 	// store complete conn config
-	shift_reg #(MUX_SEL_WIDTH * OUT_WIDTH) inst_config_sftreg(.scan_clk(scan_clk), .out(mux_config), .scan_in(scan_in), .scan_out(scan_out), .scan_en(scan_en));
-
+	//shift_reg #(MUX_SEL_WIDTH * OUT_WIDTH) inst_config_sftreg(.scan_clk(scan_clk), .out(mux_config), .scan_in(scan_in), .scan_out(scan_out), .scan_en(scan_en));
+    sram #(MUX_SEL_WIDTH * OUT_WIDTH) inst_lut_data(.scan_clk(scan_clk), .sram_data(mux_config), .scan_in(scan_in), 
+	                            .scan_out(scan_out), .scan_en(scan_en)); 
+    assign out[0] = complete_in[mux_config[2:0]];
+    assign out[1] = complete_in[mux_config[5:3]];
+    assign out[2] = complete_in[mux_config[8:6]];
+    assign out[3] = complete_in[mux_config[11:9]];
+/*
 	genvar i;
 	generate
 		for(i = 0; i < OUT_WIDTH; i = i + 1) begin
@@ -73,7 +100,7 @@ module clb_complete_conn(scan_clk, complete_in, out, scan_in, scan_out, scan_en)
 			mux_1bit #(IN_WIDTH, MUX_SEL_WIDTH) inst_complete_mux(.in(complete_in), .out(out[i]), .select(mux_config[(i * 3 + 2):i * 3]));
 		end
 	endgenerate
-
+*/
 endmodule
 
 
