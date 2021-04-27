@@ -1,23 +1,29 @@
-`include "fpga_edge.v"
-`include "tile_8x8.v"
+//`include "fpga_edge.v"
+//`include "tile_8x8.v"
 
-module fpga_core(clk, scan_clk, fpga_in, fpga_out,
+module fpga_core(clk, scan_clk, fpga_in, fpga_out, fpga_io_config,
  clb_scan_in, clb_scan_out, clb_scan_en, conn_scan_in, conn_scan_out, conn_scan_en, reset);
 
     input clk, scan_clk, clb_scan_in, clb_scan_en, conn_scan_in, conn_scan_en, reset;
     output clb_scan_out, conn_scan_out;
     input[19:0] fpga_in;
     output [19:0] fpga_out;
+    output [19:0] fpga_io_config;
 
     wire[31:0] edge_right_arry_left, array_left_edge_right, edge_top_array_bottom, array_bottom_edge_top;
     wire[7:0] clb_out_sb_in, left_cb_right_clb, bottom_cb_top_clb;
-
-    wire conn_scan_conn;
-
+    
     wire[3:0] right_dummy;
-    wire[31:0] top_in, right_in;
-    wire[7:0] top_cb_out, right_cb_out;
-
+    
+    wire conn_scan_conn, conn_scan_conn1;
+    
+    sram #(20) inst_lut_data(.scan_clk(scan_clk), .sram_data(fpga_io_config), .scan_in(conn_scan_conn1), 
+	                            .scan_out(conn_scan_out), .scan_en(conn_scan_en));
+    localparam [7:0] changed = 8'h88;
+    /*
+    assign conn_scan_out = conn_scan_conn1;
+    assign fpga_io_config = {4'b1111, 4'b0111, 4'b1111, 4'b1111, 4'b1111};
+    */
     // fpga_in and fpga_out are mapped inversely to follow the pin order
     fpga_edge inst_edge(
         .right_in(array_left_edge_right), 
@@ -36,12 +42,12 @@ module fpga_core(clk, scan_clk, fpga_in, fpga_out,
         .right_dummy_in(right_dummy)
     );
     
-    
+    wire[7:0] top_cb_out, right_cb_out;
     assign fpga_out[10] = top_cb_out[6];
     assign fpga_out[11] = top_cb_out[7];
     assign fpga_out[19:12] = right_cb_out;
     
-    
+    wire[31:0] top_in, right_in;
     assign top_in[20] = fpga_in[10];
     assign top_in[27] = fpga_in[10];
     assign top_in[24] = fpga_in[11];
@@ -63,6 +69,7 @@ module fpga_core(clk, scan_clk, fpga_in, fpga_out,
     assign right_in[30] = fpga_in[18];
     assign right_in[29] = fpga_in[19];
     
+    
     assign right_dummy[2] = fpga_in[19];
 	
     tile_8x8 inst_tile_8x8 (
@@ -72,7 +79,7 @@ module fpga_core(clk, scan_clk, fpga_in, fpga_out,
         .clb_scan_out(clb_scan_out), 
         .clb_scan_en(clb_scan_en), 
         .conn_scan_in(conn_scan_conn), 
-        .conn_scan_out(conn_scan_out), 
+        .conn_scan_out(conn_scan_conn1), 
         .conn_scan_en(conn_scan_en),
         .left_in(edge_right_arry_left), 
         .right_in(right_in), 

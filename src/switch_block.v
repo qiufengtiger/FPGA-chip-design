@@ -16,11 +16,14 @@ module switch_block(scan_clk, left_in, right_in, top_in, bottom_in, left_out, ri
 	wire scan_conn_0, scan_conn_1, scan_conn_2;
 
 	// each channel has 4 * 3:1 or 4:1 mux, which needs 4 * 2 control bits
-	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_left(.scan_clk(scan_clk), .out(mux_ctrl_left), .scan_in(scan_in), .scan_out(scan_conn_0), .scan_en(scan_en));
-	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_right(.scan_clk(scan_clk), .out(mux_ctrl_right), .scan_in(scan_conn_0), .scan_out(scan_conn_1), .scan_en(scan_en));
-	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_top(.scan_clk(scan_clk), .out(mux_ctrl_top), .scan_in(scan_conn_1), .scan_out(scan_conn_2), .scan_en(scan_en));
-	shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_bottom(.scan_clk(scan_clk), .out(mux_ctrl_bottom), .scan_in(scan_conn_2), .scan_out(scan_out), .scan_en(scan_en));
-
+	//shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_left(.scan_clk(scan_clk), .out(mux_ctrl_left), .scan_in(scan_in), .scan_out(scan_conn_0), .scan_en(scan_en));
+	//shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_right(.scan_clk(scan_clk), .out(mux_ctrl_right), .scan_in(scan_conn_0), .scan_out(scan_conn_1), .scan_en(scan_en));
+	//shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_top(.scan_clk(scan_clk), .out(mux_ctrl_top), .scan_in(scan_conn_1), .scan_out(scan_conn_2), .scan_en(scan_en));
+	//shift_reg #(CHANNEL_ONEWAY_WIDTH * 2) inst_mux_config_bottom(.scan_clk(scan_clk), .out(mux_ctrl_bottom), .scan_in(scan_conn_2), .scan_out(scan_out), .scan_en(scan_en));
+    sram #(CHANNEL_ONEWAY_WIDTH * 4 * 2) inst_lut_data(.scan_clk(scan_clk), .scan_in(scan_in), .scan_out(scan_out), .scan_en(scan_en),
+	                             .sram_data({mux_ctrl_bottom, mux_ctrl_top, mux_ctrl_right, mux_ctrl_left}));
+    
+    
 	// i/o mux inputs are arbitrary arch settings
 	// note to my groupmates: input orderings to mux are changed from the original sv version
 	// input ordering to mux: (clb_in), left, right, top, bottom, ignore current channel
