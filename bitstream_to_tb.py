@@ -22,7 +22,7 @@ tb_filepath = 'src/tb.v'
 tb_head = ''
 tb_body = ''
 tb_tail = ''
-tb_test_inspect_time = 200
+tb_test_inspect_time = 5000
 
 # tb input config
 tb_conf_filepath = 'bitstream/'+default_module+'.conf'
@@ -89,9 +89,9 @@ def format_tb_head_chip():
 			clk = 0;
 	end	
     initial begin
-		$dumpfile("tb.vcd");
-		$dumpvars(0, tb);
-    '''
+		$dumpfile("%s.vcd");
+		$dumpvars(0, %s);
+    ''' % (module_name, module_name)
 
 def format_tb_head():
     sssss = '''always @(*) begin
@@ -140,12 +140,12 @@ def format_tb_body():
     
 def format_tb_tail():
     global tb_tail
-    total_length = (len(clb_bitstream) + len(route_bitstream)) * 10 + tb_test_inspect_time
+    # total_length = (len(clb_bitstream) + len(route_bitstream)) * 200 + tb_test_inspect_time
     tb_tail = ''
     for conf_line in tb_conf:
         tb_tail += '\t\t'+conf_line + ' '
     tb_tail += '\n'
-    tb_tail += '\t\t#' + str(total_length) + ' $finish;\n'
+    tb_tail += '\t\t#' + str(tb_test_inspect_time) + ' $finish;\n'
     tb_tail += '\t end\n'
     tb_tail += 'endmodule'
 
